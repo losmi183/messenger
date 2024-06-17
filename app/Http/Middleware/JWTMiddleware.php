@@ -25,6 +25,9 @@ class JWTMiddleware
     public function handle(Request $request, Closure $next)
     {
         $token = $request->bearerToken();
+        if (!$token) {
+            abort(401, 'No token provided');
+        }
 
         $status = $this->jwtServices->decodeJWT($token);
         if ($status == 200) {
