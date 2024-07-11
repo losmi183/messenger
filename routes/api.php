@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,9 @@ Route::group(['middleware' => 'jwt'], function () {
     Route::post('/user', [UserController::class, 'user']);
     Route::post('/connect', [UserController::class, 'connect']);
 
+    Route::post('/send', [MessageController::class, 'send']);
+});
 
-
+Route::post('/broadcasting/auth', function (Request $request) {
+    return Broadcast::auth($request);
 });

@@ -82,7 +82,7 @@ class RegisterRequest extends FormRequest
     // public function prepareForValidation(): void
     // {
     //     if (!array_key_exists('name', $this->all())) {
-    //         $this->merge(['name' => 'ssssss']);
+    //         $this->merge(['name' => 'default']);
     //     }      
     // }
 }

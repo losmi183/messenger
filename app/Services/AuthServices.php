@@ -36,7 +36,7 @@ class AuthServices {
         $user = $this->userRepository->findByEmail($data['email']);
         // If user found, check password is correct
         if ($user && Hash::check($data['password'], $user->password)) {
-            $token = $this->jwtServices->createJWT($user, 60);
+            $token = $this->jwtServices->createJWT($user, 60000);
             return $token;
         }
 
