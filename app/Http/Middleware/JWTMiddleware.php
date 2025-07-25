@@ -24,17 +24,17 @@ class JWTMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
-        // $token = $request->bearerToken();
-        // if (!$token) {
-        //     abort(401, 'No token provided');
-        // }
+      
+        $token = $request->bearerToken();
+        if (!$token) {
+            abort(401, 'No token provided');
+        }
 
-        // $status = $this->jwtServices->decodeJWT($token);
-        // if ($status == 200) {
-        //     return $next($request);
-        // }
+        $status = $this->jwtServices->decodeJWT($token);
+        if ($status == 200) {
+            return $next($request);
+        }
 
-        // abort($status);
+        abort($status);
     }
 }

@@ -1,0 +1,177 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Nfc locks api",
+        "description": "Nfc locks",
+        "contact": {
+            "email": "tcom.developer@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://messenger.test/api",
+            "description": "Dev server"
+        }
+    ],
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register new user",
+                "operationId": "ed42f392010c301892e640067141676e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "user name",
+                                        "type": "string",
+                                        "default": "newuser"
+                                    },
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string",
+                                        "default": "newuser@mail.com"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string",
+                                        "default": "Secret123#"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user",
+                "operationId": "8cb7742ae98d0990acb2907c4e00bf24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string",
+                                        "default": "user@mail.com"
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "type": "string",
+                                        "default": "Secret123#"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Korisnik prijavljen"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/auth/whoami": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Podaci o korisniku na osnovu tokena",
+                "operationId": "7cd7c8c9f7981009260efca1565a769b",
+                "responses": {
+                    "200": {
+                        "description": "Podaci o korisniku vraćeni na front"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user",
+                "operationId": "0d29c740dc06d77602af8095bf4654cc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {}
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged out"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Controller": {
+                "format": "https"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Authorize with bearer token",
+                "name": "Authorization",
+                "in": "header",
+                "scheme": "Bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        }
+    ]
+}

@@ -17,11 +17,12 @@ use App\Http\Controllers\MessageController;
 |
 */
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::group(['middleware' => 'jwt'], function () {
+Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
 
     Route::post('/whoami', [AuthController::class, 'whoami']);
     Route::post('/logout', [AuthController::class, 'logout']);
