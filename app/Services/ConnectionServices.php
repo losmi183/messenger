@@ -50,38 +50,37 @@ class ConnectionServices {
         return $connection;
     }  
 
-    public function accept(int $connection_id): bool
+    public function accept(int $connection_id): Connection
     {
-        $initiator = $this->jwtServices->getContent();
+        $recipient = $this->jwtServices->getContent();
 
         try {
-            $updated = DB::table('connections')
-                ->where('id', $connection_id)
-                ->where('initiator_id', $this->initiator['id'])
+            $connection = Connection::where('id', $connection_id)
+                ->where('recipient_id', $recipient['id'])
+                ->where('is_accepted', 0)
                 ->update([
                     'is_accepted' => true,
                     'accepted_at' => now(),
                 ]);
 
-            if (!$updated) {
+            if (!$connection) {
                 abort(response()->json(['error' => 'Connection not found'], 404));
             }
 
-            return true;
+            return Connection::find($connection_id);
         } catch (QueryException $e) {
             Log::error("DB error in accept(): " . $e->getMessage());
             abort(response()->json(['error' => 'Database error: ' . $e->getMessage()], 500));
         }
     }
 
-    public function reject(int $connection_id)
+    public function reject(int $connection_id):bool
     {
-        $initiator = $this->jwtServices->getContent();
+        $recipient = $this->jwtServices->getContent();
 
         try {
-            $deleted = DB::table('connections')
-                ->where('id', $connection_id)
-                ->where('initiator_id', $this->initiator['id'])
+            $deleted = Connection::where('id', $connection_id)
+                ->where('recipient_id', $recipient['id'])
                 ->delete();
 
             if (!$deleted) {
