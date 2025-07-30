@@ -150,6 +150,28 @@
                 ]
             }
         },
+        "/connection/my-connections": {
+            "get": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "Get all connections for authenticated user",
+                "operationId": "ae9d9e3875ff636c933b90638d6fb6a2",
+                "responses": {
+                    "200": {
+                        "description": "All user connections"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/connection/initiate": {
             "post": {
                 "tags": [
@@ -261,6 +283,47 @@
                 "responses": {
                     "200": {
                         "description": "Connection rejected"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/connection/delete": {
+            "post": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "delete Connection",
+                "operationId": "c0dbece303944a9f8232173550539277",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "connection_id"
+                                ],
+                                "properties": {
+                                    "connection_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection delete"
                     },
                     "500": {
                         "description": "Server Error"

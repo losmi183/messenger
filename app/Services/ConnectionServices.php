@@ -4,11 +4,11 @@ namespace App\Services;
 use App\Models\User;
 use App\Models\Connection;
 use App\Repository\UserRepository;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
-use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
 class ConnectionServices {
@@ -19,6 +19,26 @@ class ConnectionServices {
     public function __construct(UserRepository $userRepository, JWTServices $jwtServices) {
         $this->userRepository = $userRepository;
         $this->jwtServices = $jwtServices;
+    }
+
+    public function myConnections(): Collection
+    {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+
+        return DB::table('users as u')
+            ->join('user_connections as c', function ($join) {
+                $join->on('u.id', '=', 'c.initiator_id')
+                    ->orOn('u.id', '=', 'c.recipient_id');
+            })
+            ->where(function ($query) use ($user_id) {
+                $query->where('c.initiator_id', $user_id)
+                    ->orWhere('c.recipient_id', $user_id);
+            })
+            ->where('u.id', '!=', $user_id) // <--- isključujemo samog sebe
+            ->select('u.id', 'u.name') // izaberi samo šta ti treba
+            ->distinct()
+            ->get();
     }
 
    
@@ -90,6 +110,29 @@ class ConnectionServices {
             return true;
         } catch (QueryException $e) {
             Log::error("DB error in reject(): " . $e->getMessage());
+            abort(response()->json(['error' => 'Database error: ' . $e->getMessage()], 500));
+        }
+    }
+    public function delete(int $connection_id): bool
+    {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+
+        try {
+            $deleted = Connection::where('id', $connection_id)
+                ->where(function ($query) use ($user_id) {
+                    $query->where('initiator_id', $user_id)
+                        ->orWhere('recipient_id', $user_id);
+                })
+                ->delete();
+
+            if (!$deleted) {
+                abort(response()->json(['error' => 'Connection not found'], 404));
+            }
+
+            return true;
+        } catch (QueryException $e) {
+            Log::error("DB error in delete(): " . $e->getMessage());
             abort(response()->json(['error' => 'Database error: ' . $e->getMessage()], 500));
         }
     }

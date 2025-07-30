@@ -20,6 +20,22 @@ class ConnetcionController extends Controller
         $this->connectionServices = $connectionServices;
     }
 
+    #[OA\Get(
+        path: '/connection/my-connections',
+        summary: 'Get all connections for authenticated user',
+        tags: ['Connection'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'All user connections'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
+        ]
+    )]
+    public function myConnections(): JsonResponse
+    {
+        $result = $this->connectionServices->myConnections();
+        return response()->json($result);
+    }
+
     #[OA\Post(
         path: '/connection/initiate',
         summary: 'Initiate new connection',
@@ -92,6 +108,31 @@ class ConnetcionController extends Controller
     {
         $data = $request->validated();
         $result = $this->connectionServices->reject($data['connection_id']);
+        return response()->json($result);
+    }
+
+    #[OA\Post(
+        path: '/connection/delete',
+        summary: 'delete Connection',
+        requestBody: new OA\RequestBody(required: true,
+        content: new OA\MediaType(mediaType: 'application/json',
+        schema: new OA\Schema(required: ['connection_id'],
+            properties: [
+                new OA\Property(property: 'connection_id', type: 'integer', default: 1),
+            ]
+        ),
+    )),
+        tags: ['Connection'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'Connection delete'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+        ]
+    )]
+    public function delete(InitiateRejectRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $result = $this->connectionServices->delete($data['connection_id']);
         return response()->json($result);
     }
 }

@@ -35,10 +35,14 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
 });
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function () {
+
+    Route::get('/my-connections', [ConnetcionController::class, 'myConnections']);
+
     Route::post('/initiate', [ConnetcionController::class, 'initiate']);
     Route::post('/accept', [ConnetcionController::class, 'accept']);
     Route::post('/reject', [ConnetcionController::class, 'reject']);
 
+    Route::post('/delete', [ConnetcionController::class, 'delete']);
 });
 
 Route::post('/broadcasting/auth', function (Request $request) {
