@@ -133,22 +133,219 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Logout user",
+                "summary": "Odjava sa sistema",
                 "operationId": "0d29c740dc06d77602af8095bf4654cc",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {}
-                    }
-                },
                 "responses": {
                     "200": {
-                        "description": "User logged out"
+                        "description": "Korisnik odjavljen iz sistema"
                     },
                     "500": {
                         "description": "Server Error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/connection/initiate": {
+            "post": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "Initiate new connection",
+                "operationId": "9fb490977767a4d0f9f4ae7da304f404",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "recipient_id"
+                                ],
+                                "properties": {
+                                    "recipient_id": {
+                                        "type": "integer",
+                                        "default": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection Initiated"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/connection/accept": {
+            "post": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "Accept Connection",
+                "operationId": "735cb7e734238cf2c0df1c96fd8818fc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "connection_id"
+                                ],
+                                "properties": {
+                                    "connection_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection accepted"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/connection/reject": {
+            "post": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "Reject Connection",
+                "operationId": "c7293bdddb4b0866d7532558b788cb58",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "connection_id"
+                                ],
+                                "properties": {
+                                    "connection_id": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection rejected"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/search": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Search user by name or email",
+                "operationId": "7495095e5b6c23625c419daaa0200f1a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "search"
+                                ],
+                                "properties": {
+                                    "search": {
+                                        "description": "search string",
+                                        "type": "string",
+                                        "default": "user"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User registered"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/show/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find user by ID",
+                "operationId": "2359a38d992595bc4001f41c0b92d89d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
@@ -172,6 +369,14 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Connection",
+            "description": "Connection"
+        },
+        {
+            "name": "User",
+            "description": "User"
         }
     ]
 }

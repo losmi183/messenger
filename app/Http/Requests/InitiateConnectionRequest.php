@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
-class ConnectRequest extends FormRequest
+class InitiateConnectionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class ConnectRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer',
+            'recipient_id' => 'required|integer',
         ];
     }
  

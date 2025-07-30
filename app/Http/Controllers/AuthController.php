@@ -87,15 +87,13 @@ class AuthController extends Controller
     }
     
     #[OA\Post(
-        path: '/auth/logout',
-        summary: 'Logout user',
-        requestBody: new OA\RequestBody(required: true,
-        content: new OA\MediaType(mediaType: 'application/json',
-    )),
-        tags: ['Auth'],
+        path: "/auth/logout",
+        summary: "Odjava sa sistema",
+        tags: ["Auth"],
+        security: [['bearerAuth' => []]],
         responses: [
-            new OA\Response(response: Response::HTTP_OK, description: 'User logged out'),
-            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+            new OA\Response(response: Response::HTTP_OK, description: "Korisnik odjavljen iz sistema"),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error")
         ]
     )]
     public function logout(): JsonResponse

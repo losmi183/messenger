@@ -9,5 +9,6 @@ class Connection extends Model
 {
     use HasFactory;
 
+    protected $table = 'user_connections';
     protected $guarded = ['id'];
 }

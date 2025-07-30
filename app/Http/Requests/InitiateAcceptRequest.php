@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 
-class UsersRequest extends FormRequest
+class InitiateAcceptRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,16 +25,10 @@ class UsersRequest extends FormRequest
     public function rules()
     {
         return [
-            'search' => 'nullable|string|max:20',
+            'connection_id' => 'required|integer',
         ];
     }
-
-    /**
-     * Define custom error messages.
-     *
-     * @return array
-     */
-    
+ 
     /**
      * @param Validator $validator
      *
@@ -49,10 +43,10 @@ class UsersRequest extends FormRequest
      * Setovanje neobaveznih polja na null ako nisu poslata
      * @return void
      */
-    public function prepareForValidation(): void
-    {
-        if (!array_key_exists('search', $this->all())) {
-            $this->merge(['search' => null]);
-        }      
-    }
+    // public function prepareForValidation(): void
+    // {
+    //     if (!array_key_exists('name', $this->all())) {
+    //         $this->merge(['name' => 'ssssss']);
+    //     }      
+    // }
 }

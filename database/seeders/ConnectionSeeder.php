@@ -15,9 +15,15 @@ class ConnectionSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('connections')->insert([
-            'user1_id' => 1,
-            'user2_id' => 2
+        DB::table('user_connections')->insert([
+            'initiator_id' => 1,
+            'recipient_id' => 2,
+            'is_accepted' => true,
+            'accepted_at' => now()
+        ]);
+        DB::table('user_connections')->insert([
+            'initiator_id' => 1,
+            'recipient_id' => 3,
         ]);
     }
 }

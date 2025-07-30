@@ -13,14 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('connections', function (Blueprint $table) {
+        Schema::create('user_connections', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user1_id')->nullable();
-            $table->unsignedBigInteger('user2_id')->nullable();
-            $table->foreign('user1_id')->references('id')->on('users');
-            $table->foreign('user2_id')->references('id')->on('users');
-            $table->boolean('accepted')->default(false);
+            $table->foreignId('initiator_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('recipient_id')->constrained('users')->onDelete('cascade');
+            $table->boolean('is_accepted')->default(false);
+            $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
+
+            // Unikatan par da se ne može više puta poslati zahtev
+            $table->unique(['initiator_id', 'recipient_id']);
         });
     }
 

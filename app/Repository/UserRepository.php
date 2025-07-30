@@ -31,7 +31,7 @@ class UserRepository
         return User::where('email', $email)->first();
     }
 
-    public function users(array $data): ?Collection
+    public function search(array $data): ?Collection
     {
         $search = $data['search'] ?? null;
         return User::when($search, function ($query) use ($search) {
@@ -41,36 +41,8 @@ class UserRepository
         ->get();
     }
 
-    public function user(int $id): ?User
+    public function show(int $id): ?User
     {
         return User::find($id);
-    }
-
-    public function connect(int $id): ?User
-    {
-        return User::find($id);
-    }
-
-    public function getConnection(int $id1, int $id2): ?Connection
-    {
-        $user = Connection::where(function($query) use ($id1, $id2) {
-            $query->where('user1_id', $id1)
-                  ->where('user2_id', $id2);
-        })
-        ->orWhere(function($query) use ($id1, $id2) {
-            $query->where('user1_id', $id2)
-                  ->where('user2_id', $id1);
-        })
-        ->first();
-
-        return $user;
-    }
-
-    public function makeConnection(int $id1, int $id2): Connection
-    {
-        return Connection::create([
-            'user1_id' => $id1,
-            'user2_id' => $id2
-        ]);
     }
 }
