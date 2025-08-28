@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ConnetcionController;
+use App\Http\Controllers\PusherAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,8 +26,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
-    Route::post('/whoami', [AuthController::class, 'whoami']);    
-    Route::post('/send', [MessageController::class, 'send']);
+    Route::get('/whoami', [AuthController::class, 'whoami']);
 });
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
@@ -35,14 +35,17 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
 });
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function () {
-
     Route::get('/my-connections', [ConnetcionController::class, 'myConnections']);
-
     Route::post('/initiate', [ConnetcionController::class, 'initiate']);
     Route::post('/accept', [ConnetcionController::class, 'accept']);
     Route::post('/reject', [ConnetcionController::class, 'reject']);
-
     Route::post('/delete', [ConnetcionController::class, 'delete']);
+});
+
+Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate']);
+Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function () {
+    Route::get('/conversation/{friend_id}', [MessageController::class, 'conversation']);
+    Route::post('/send', [MessageController::class, 'send']);
 });
 
 Route::post('/broadcasting/auth', function (Request $request) {

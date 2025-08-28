@@ -2,20 +2,96 @@
 
 namespace App\Http\Controllers;
 
+use Pusher\Pusher;
 use App\Events\MessageSent;
+use App\Services\JWTServices;
+use OpenApi\Attributes as OA;
 use App\Services\MessageServices;
 use Illuminate\Http\JsonResponse;
+use App\Repository\UserRepository;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\MessageSendRequest;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class MessageController extends Controller
 {
-    public function send(MessageSendRequest $request, MessageServices $messageServices): JsonResponse
-    {       
-        // event(new MessageSent('new message', 5));
-        // return response()->json(['status' => 'Message Sent!']);   
+    private MessageServices $messageServices;
+    public function __construct(UserRepository $userRepository, MessageServices $messageServices) {
+        $this->userRepository = $userRepository;
+        $this->messageServices = $messageServices;
+    }
 
+    #[OA\Get(
+        path: '/message/conversation/{friend_id}',
+        summary: 'Get conversation with a friend',
+        tags: ['Message'],
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'friend_id',
+                in: 'path',
+                required: true,
+                description: 'ID of the friend to fetch conversation with',
+                schema: new OA\Schema(type: 'integer', example: 3)
+            )
+        ],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'Conversation retrieved successfully'),
+            new OA\Response(response: Response::HTTP_UNAUTHORIZED, description: 'Unauthorized'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+        ]
+    )]
+    public function conversation(int $friend_id): JsonResponse
+    {
+        $result = $this->messageServices->conversation($friend_id);
+
+        return response()->json($result);
+    }
+
+
+    #[OA\Post(
+        path: '/message/send',
+        summary: 'Send message',
+        requestBody: new OA\RequestBody(required: true,
+        content: new OA\MediaType(mediaType: 'application/json',
+        schema: new OA\Schema(required: ['recipient_id'],
+            properties: [
+                new OA\Property(property: 'recipient_id', type: 'integer', default: 3),
+                new OA\Property(property: 'content', type: 'text', default: 'lorem ipsum'),
+            ]
+        ),
+    )),
+        tags: ['Message'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'Message sent'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+        ]
+    )]
+    public function send(MessageSendRequest $request): JsonResponse
+    {
         $data = $request->validated();
-        $messageServices->send($data);
+        
+        // Hardkodovano za korisnika ID 1
+        $userId = 1;
+        
+        $pusher = new Pusher(
+            config('pusher.key'),
+            config('pusher.secret'),
+            config('pusher.app_id'),
+            [
+                'cluster' => config('pusher.cluster'),
+                'useTLS' => config('pusher.useTLS', true),
+            ]
+        );
+
+        // Privatni kanal za korisnika ID 1
+        $pusher->trigger("private-user-{$userId}", 'my-event', [
+            'message' => $data['content'],
+            'from' => 'milos',
+        ]);
+
         return response()->json(['status' => 'success']);
     }
 }

@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Pusher\Pusher;
 use Illuminate\Http\Request;
+use OpenApi\Attributes as OA;
 use App\Services\AuthServices;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -70,7 +71,7 @@ class AuthController extends Controller
         ]);
     }
 
-    #[OA\Post(
+    #[OA\Get(
         path: "/auth/whoami",
         summary: "Podaci o korisniku na osnovu tokena",
         tags: ["Auth"],

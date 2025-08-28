@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(ConnectionSeeder::class);
+        $this->call(MessageSeeder::class);
         // \App\Models\User::factory(100)->create();
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
