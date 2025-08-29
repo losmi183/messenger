@@ -42,7 +42,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function
     Route::post('/delete', [ConnetcionController::class, 'delete']);
 });
 
-Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate']);
+Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->middleware('jwt');
 Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function () {
     Route::get('/conversation/{friend_id}', [MessageController::class, 'conversation']);
     Route::post('/send', [MessageController::class, 'send']);

@@ -150,49 +150,6 @@
                 ]
             }
         },
-        "/auth/broadcasting": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Pusher client auth",
-                "operationId": "95140b206f42deac0aaaed15fac3d94a",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "channel_name",
-                                    "socket_id"
-                                ],
-                                "properties": {
-                                    "channel_name": {
-                                        "type": "string",
-                                        "example": "private-user.1"
-                                    },
-                                    "socket_id": {
-                                        "type": "string",
-                                        "example": "1234.56789"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Test response"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/connection/my-connections": {
             "get": {
                 "tags": [

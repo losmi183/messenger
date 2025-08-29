@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Pusher\Pusher;
+use Illuminate\Http\Request;
+use App\Services\JWTServices;
 
 class PusherAuthController extends Controller
 {
+    private JWTServices $jWTServices;
+    public function __construct(JWTServices $jWTServices) {
+        $this->jWTServices = $jWTServices;
+    }
+
     public function authenticate(Request $request)
     {
         $pusher = new Pusher(
@@ -19,16 +25,17 @@ class PusherAuthController extends Controller
             ]
         );
 
-        $channelName = $request->input('channel_name');
-        $socketId = $request->input('socket_id');
+        $channel_name = $request->input('channel_name');
+        $socket_id = $request->input('socket_id');
         
-        // Za sada hardkoduj da je user ID 1
-        $userId = 1;
+        $user = $this->jWTServices->getContent();
+        $user_id = $user['id'];
+
         
         // Proveri da li korisnik sme da pristupa ovom kanalu
-        if ($channelName === "private-user-{$userId}") {
+        if ($channel_name === "private-user-{$user_id}") {
             // Autorizuj pristup
-            $auth = $pusher->socket_auth($channelName, $socketId);
+            $auth = $pusher->socket_auth($channel_name, $socket_id);
             return response($auth);
         }
         

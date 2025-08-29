@@ -17,9 +17,11 @@ use Symfony\Component\HttpFoundation\Response;
 class MessageController extends Controller
 {
     private MessageServices $messageServices;
-    public function __construct(UserRepository $userRepository, MessageServices $messageServices) {
+    private JWTServices $jWTServices;
+    public function __construct(UserRepository $userRepository, MessageServices $messageServices, JWTServices $jWTServices) {
         $this->userRepository = $userRepository;
         $this->messageServices = $messageServices;
+        $this->jWTServices = $jWTServices;
     }
 
     #[OA\Get(
@@ -72,9 +74,11 @@ class MessageController extends Controller
     public function send(MessageSendRequest $request): JsonResponse
     {
         $data = $request->validated();
-        
-        // Hardkodovano za korisnika ID 1
-        $userId = 1;
+
+        $user = $this->jWTServices->getContent();
+        unset($user['exp']);
+        $recipient_id = $request->recipient_id;
+        $event = 'message.sent';
         
         $pusher = new Pusher(
             config('pusher.key'),
@@ -87,9 +91,9 @@ class MessageController extends Controller
         );
 
         // Privatni kanal za korisnika ID 1
-        $pusher->trigger("private-user-{$userId}", 'my-event', [
+        $pusher->trigger("private-user-{$recipient_id}", $event, [
             'message' => $data['content'],
-            'from' => 'milos',
+            'from' => $user,
         ]);
 
         return response()->json(['status' => 'success']);
