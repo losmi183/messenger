@@ -1,11 +1,14 @@
 <?php
 
 namespace App\Services;
+use Pusher\Pusher;
 use App\Models\User;
+use App\Models\Message;
 use App\Events\MessageSent;
 use App\Repository\UserRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Repository\MessageRepository;
 
@@ -43,16 +46,38 @@ class MessageServices {
         return $messages;
     }
 
-    // public function send(array $data): int
-    // {
-    //     // 1. sand message to reciver via web socket to client 
-    //     event(new MessageSent($data['message'], $data['receiver_id']));
-    //     // broadcast(new MessageSent($data['message'], $data['receiver_id']))->toOthers();
+    public function send(int $recipient_id, string $content): bool
+    {
+        $user = $this->jwtServices->getContent();
+        unset($user['exp']);
+        $event = 'message.sent';
 
+        $pusher = new Pusher(
+            config('pusher.key'),
+            config('pusher.secret'),
+            config('pusher.app_id'),
+            [
+                'cluster' => config('pusher.cluster'),
+                'useTLS' => config('pusher.useTLS', true),
+            ]
+        );
 
-    //     // 2. save message in database
-    //     $this->messageRepository->save($data);
+        // Privatni kanal za korisnika recipient_id
+        $pusher->trigger("private-user-{$recipient_id}", $event, [
+            'message' => $content,
+            'from' => $user,
+        ]);
 
-    //     return 1;
-    // }
+        try {
+            Message::create([
+                'sender_id' => $user['id'],
+                'receiver_id' => $recipient_id,
+                'message' => $content,
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
+
+        return true;
+    }
 }

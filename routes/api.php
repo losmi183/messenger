@@ -48,6 +48,6 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function ()
     Route::post('/send', [MessageController::class, 'send']);
 });
 
-Route::post('/broadcasting/auth', function (Request $request) {
-    return Broadcast::auth($request);
-});
+// Route::post('/broadcasting/auth', function (Request $request) {
+//     return Broadcast::auth($request);
+// });

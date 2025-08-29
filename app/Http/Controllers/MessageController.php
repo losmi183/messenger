@@ -75,26 +75,7 @@ class MessageController extends Controller
     {
         $data = $request->validated();
 
-        $user = $this->jWTServices->getContent();
-        unset($user['exp']);
-        $recipient_id = $request->recipient_id;
-        $event = 'message.sent';
-        
-        $pusher = new Pusher(
-            config('pusher.key'),
-            config('pusher.secret'),
-            config('pusher.app_id'),
-            [
-                'cluster' => config('pusher.cluster'),
-                'useTLS' => config('pusher.useTLS', true),
-            ]
-        );
-
-        // Privatni kanal za korisnika ID 1
-        $pusher->trigger("private-user-{$recipient_id}", $event, [
-            'message' => $data['content'],
-            'from' => $user,
-        ]);
+        $this->messageServices->send($data['recipient_id'], $data['content']);        
 
         return response()->json(['status' => 'success']);
     }
