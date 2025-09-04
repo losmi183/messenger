@@ -26,7 +26,7 @@ class ConnectionServices {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
 
-        return DB::table('users as u')
+        $friends = DB::table('users as u')
             ->join('user_connections as c', function ($join) {
                 $join->on('u.id', '=', 'c.initiator_id')
                     ->orOn('u.id', '=', 'c.recipient_id');
@@ -39,6 +39,25 @@ class ConnectionServices {
             ->select('u.id', 'u.name') // izaberi samo šta ti treba
             ->distinct()
             ->get();
+        $friend_ids = $friends->pluck('id');
+
+        $messages = DB::table('messages')
+        ->select('sender_id')
+        ->whereIn('sender_id', $friend_ids)
+        ->where('receiver_id', $user_id)
+        ->whereNull('seen')
+        ->pluck('sender_id');
+
+        foreach ($friends as $friend) {
+            $friend->unseen_messages = 0;
+            foreach ($messages as $message) {
+                if($message == $friend->id) {
+                    $friend->unseen_messages++;
+                }
+            }
+        }
+
+        return $friends;
     }
 
    

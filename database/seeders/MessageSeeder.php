@@ -22,6 +22,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 2,
+                'conversation_id' => 12,
                 'message' => 'Ćao, šta se radi?',
                 'is_read' => 1,
                 'created_at' => $start1->copy(),
@@ -30,6 +31,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 2,
                 'receiver_id' => 1,
+                'conversation_id' => 12,
                 'message' => 'Ništa posebno, odmaram. A ti?',
                 'is_read' => 1,
                 'created_at' => $start1->copy()->addMinute(),
@@ -38,6 +40,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 2,
+                'conversation_id' => 12,
                 'message' => 'Isto tako, gledam neki film.',
                 'is_read' => 1,
                 'created_at' => $start1->copy()->addMinutes(2),
@@ -46,6 +49,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 2,
                 'receiver_id' => 1,
+                'conversation_id' => 12,
                 'message' => 'Koji film gledaš?',
                 'is_read' => 1,
                 'created_at' => $start1->copy()->addMinutes(3),
@@ -54,6 +58,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 2,
+                'conversation_id' => 12,
                 'message' => 'Neki akcioni, baš je dobar.',
                 'is_read' => 0,
                 'created_at' => $start1->copy()->addMinutes(4),
@@ -62,6 +67,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 2,
                 'receiver_id' => 1,
+                'conversation_id' => 12,
                 'message' => 'Super, možda i ja pogledam kasnije.',
                 'is_read' => 0,
                 'created_at' => $start1->copy()->addMinutes(5),
@@ -76,6 +82,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 3,
+                'conversation_id' => 13,
                 'message' => 'Hej, jesi slobodan večeras?',
                 'is_read' => 1,
                 'created_at' => $start2->copy(),
@@ -84,6 +91,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 3,
                 'receiver_id' => 1,
+                'conversation_id' => 13,
                 'message' => 'Ćao, da, što pitaš?',
                 'is_read' => 1,
                 'created_at' => $start2->copy()->addMinute(),
@@ -92,6 +100,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 3,
+                'conversation_id' => 13,
                 'message' => 'Razmišljam da izađemo na piće.',
                 'is_read' => 1,
                 'created_at' => $start2->copy()->addMinutes(2),
@@ -100,6 +109,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 3,
                 'receiver_id' => 1,
+                'conversation_id' => 13,
                 'message' => 'Može, gde si mislio?',
                 'is_read' => 1,
                 'created_at' => $start2->copy()->addMinutes(3),
@@ -108,6 +118,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 1,
                 'receiver_id' => 3,
+                'conversation_id' => 13,
                 'message' => 'Kod onog kafića u centru.',
                 'is_read' => 0,
                 'created_at' => $start2->copy()->addMinutes(4),
@@ -116,6 +127,7 @@ class MessageSeeder extends Seeder
             [
                 'sender_id' => 3,
                 'receiver_id' => 1,
+                'conversation_id' => 13,
                 'message' => 'Dogovoreno, vidimo se kasnije!',
                 'is_read' => 0,
                 'created_at' => $start2->copy()->addMinutes(5),

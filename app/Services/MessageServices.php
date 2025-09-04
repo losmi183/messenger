@@ -40,13 +40,14 @@ class MessageServices {
             $q->where('m.sender_id', $friend_id)
             ->where('m.receiver_id', $user_id);
         })
+        // ->where('conversation_id', $conversation_id)
         ->orderBy('m.created_at', 'asc')
         ->get();
 
         return $messages;
     }
 
-    public function send(int $recipient_id, string $content): bool
+    public function send(int $recipient_id, string $content): Message
     {
         $user = $this->jwtServices->getContent();
         unset($user['exp']);
@@ -69,11 +70,53 @@ class MessageServices {
         ]);
 
         try {
-            Message::create([
+            $message = Message::create([
                 'sender_id' => $user['id'],
                 'receiver_id' => $recipient_id,
                 'message' => $content,
             ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
+
+        return $message;
+    }
+
+
+
+    public function seen(int $friend_id, string $seen): bool
+    {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+        $event = 'message.seen';
+
+        $pusher = new Pusher(
+            config('pusher.key'),
+            config('pusher.secret'),
+            config('pusher.app_id'),
+            [
+                'cluster' => config('pusher.cluster'),
+                'useTLS' => config('pusher.useTLS', true),
+            ]
+        );
+
+        // Privatni kanal za korisnika recipient_id
+        $pusher->trigger("private-user-{$friend_id}", $event, [
+            'seen' => $seen
+        ]);
+
+        try {
+            Message::where(function ($q) use ($user_id, $friend_id) {
+            $q->where('sender_id', $user_id)
+            ->where('receiver_id', $friend_id);
+        })
+        ->orWhere(function ($q) use ($user_id, $friend_id) {
+            $q->where('sender_id', $friend_id)
+            ->where('receiver_id', $user_id);
+        })
+        ->update([
+            'seen' => $seen
+        ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
         }

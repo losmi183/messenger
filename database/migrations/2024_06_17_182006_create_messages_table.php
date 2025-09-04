@@ -16,10 +16,15 @@ return new class extends Migration
 
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
+            $table->unsignedBigInteger('conversation_id')->index();
             
             $table->text('message');
 
+            $table->string('status')->default('sent');
+
             $table->boolean('is_read')->default(false);
+
+            $table->timestamp('seen')->nullable();
 
             $table->timestamps();
 

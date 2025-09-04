@@ -10,6 +10,7 @@ use App\Services\MessageServices;
 use Illuminate\Http\JsonResponse;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\MessageSeenRequest;
 use App\Http\Requests\MessageSendRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,5 +79,14 @@ class MessageController extends Controller
         $this->messageServices->send($data['recipient_id'], $data['content']);        
 
         return response()->json(['status' => 'success']);
+    }
+
+    public function seen(MessageSeenRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $result = $this->messageServices->seen($data['friend_id'], $data['seen']);        
+
+        return response()->json($result);
     }
 }
