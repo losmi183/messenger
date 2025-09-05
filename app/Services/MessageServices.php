@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Message;
@@ -107,15 +108,11 @@ class MessageServices {
 
         try {
             Message::where(function ($q) use ($user_id, $friend_id) {
-            $q->where('sender_id', $user_id)
-            ->where('receiver_id', $friend_id);
-        })
-        ->orWhere(function ($q) use ($user_id, $friend_id) {
             $q->where('sender_id', $friend_id)
             ->where('receiver_id', $user_id);
         })
         ->update([
-            'seen' => $seen
+            'seen' => Carbon::parse($seen)->toDateTimeString()
         ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

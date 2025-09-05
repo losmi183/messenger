@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
-            $table->unsignedBigInteger('conversation_id')->index();
+            $table->unsignedBigInteger('conversation_id')->index()->nullable();
             
             $table->text('message');
 

@@ -49,10 +49,10 @@ class ConnectionServices {
         ->pluck('sender_id');
 
         foreach ($friends as $friend) {
-            $friend->unseen_messages = 0;
+            $friend->new_messages = 0;
             foreach ($messages as $message) {
                 if($message == $friend->id) {
-                    $friend->unseen_messages++;
+                    $friend->new_messages++;
                 }
             }
         }
