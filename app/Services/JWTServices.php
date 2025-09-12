@@ -80,7 +80,10 @@ class JWTServices
         $userData = [
             'id' => $user->id,
             'email' => $user->email,
-            'name' => $user->name
+            'name' => $user->name,
+            'about' => $user->about,
+            'role' => $user->role,
+            'avatar' => $user->avatar,
         ];
         $userData['exp'] = time() + $ttl_minutes * 60;
         $token = JWT::encode($userData, $this->key, 'HS256');

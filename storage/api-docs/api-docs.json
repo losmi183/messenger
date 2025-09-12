@@ -83,12 +83,12 @@
                                     "email": {
                                         "description": "email",
                                         "type": "string",
-                                        "default": "user@mail.com"
+                                        "default": "milos@mail.com"
                                     },
                                     "password": {
                                         "description": "password",
                                         "type": "string",
-                                        "default": "Secret123#"
+                                        "default": "milos"
                                     }
                                 },
                                 "type": "object"
@@ -481,6 +481,131 @@
                 "responses": {
                     "200": {
                         "description": "User found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/edit": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find user by auth token",
+                "operationId": "fef4feace1e1197ecf512a20eb5bf906",
+                "responses": {
+                    "200": {
+                        "description": "User found"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/update": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user data",
+                "operationId": "25fa6e59311f61c2be4cca80c602dde3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "about",
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "User name",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "about": {
+                                        "description": "About user",
+                                        "type": "string",
+                                        "example": "Software developer from Belgrade"
+                                    },
+                                    "avatar": {
+                                        "description": "User avatar file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/user/change-password": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Change user password",
+                "operationId": "48fbc004e5b7e15198e50b6409fbd7ec",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "about",
+                                    "avatar"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "description": "User password",
+                                        "type": "string",
+                                        "example": "Password123#"
+                                    },
+                                    "password2": {
+                                        "description": "User password repeated",
+                                        "type": "string",
+                                        "example": "Password123#"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated"
                     },
                     "500": {
                         "description": "Server Error"

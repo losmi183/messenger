@@ -6,9 +6,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class LoginRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +17,7 @@ class LoginRequest extends FormRequest
         return true;
     }
 
-/**
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -26,8 +25,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'password' => 'required|string|min:8',
+            'password2' => 'required|string|min:8|same:password',
         ];
     }
 
@@ -36,14 +35,13 @@ class LoginRequest extends FormRequest
      *
      * @return void
      */
-
-    protected function failedValidation(Validator $validator)
+    public function failedValidation(Validator $validator): JsonResponse
     {
-        throw new HttpResponseException(
+        abort(
             response()->json(
                 ["errors" => $validator->errors()],
-                Response::HTTP_UNPROCESSABLE_ENTITY // 422
+                Response::HTTP_UNPROCESSABLE_ENTITY // 422 je standard za validaciju
             )
         );
-}
+    }
 }

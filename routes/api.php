@@ -32,6 +32,9 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
 Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
     Route::post('/search', [UserController::class, 'search']);
     Route::get('/show/{id}', [UserController::class, 'show']);
+    Route::get('/edit', [UserController::class, 'edit']);
+    Route::post('/update', [UserController::class, 'update']);
+    Route::post('/change-password', [UserController::class, 'changePassword']);
 });
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function () {

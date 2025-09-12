@@ -49,8 +49,8 @@ class AuthController extends Controller
         content: new OA\MediaType(mediaType: 'application/json',
         schema: new OA\Schema(required: ['email', 'password'],
             properties: [
-                new OA\Property(property: 'email', type: 'string', default: 'user@mail.com', description: 'email'),
-                new OA\Property(property: 'password', type: 'string', default: 'Secret123#', description: 'password'),
+                new OA\Property(property: 'email', type: 'string', default: 'milos@mail.com', description: 'email'),
+                new OA\Property(property: 'password', type: 'string', default: 'milos', description: 'password'),
             ]
         ),
     )),
