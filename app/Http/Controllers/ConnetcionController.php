@@ -36,6 +36,22 @@ class ConnetcionController extends Controller
         return response()->json($result);
     }
 
+    #[OA\Get(
+        path: '/connection/requested',
+        summary: 'Get all connection requests for authenticated user',
+        tags: ['Connection'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'All user requests'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
+        ]
+    )]
+    public function requested(): JsonResponse
+    {
+        $result = $this->connectionServices->requested();
+        return response()->json($result);
+    }
+
     #[OA\Post(
         path: '/connection/initiate',
         summary: 'Initiate new connection',

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('initiator_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('recipient_id')->constrained('users')->onDelete('cascade');
-            $table->boolean('is_accepted')->default(false);
             $table->timestamp('accepted_at')->nullable();
             $table->timestamps();
 

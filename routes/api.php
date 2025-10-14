@@ -39,6 +39,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function () {
     Route::get('/my-connections', [ConnetcionController::class, 'myConnections']);
+    Route::get('/requested', [ConnetcionController::class, 'requested']);
     Route::post('/initiate', [ConnetcionController::class, 'initiate']);
     Route::post('/accept', [ConnetcionController::class, 'accept']);
     Route::post('/reject', [ConnetcionController::class, 'reject']);

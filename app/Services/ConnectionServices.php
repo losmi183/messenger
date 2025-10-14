@@ -60,20 +60,41 @@ class ConnectionServices {
         return $friends;
     }
 
+    public function requested(): Collection
+    {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+
+        $friends = DB::table('user_connections as c')
+            ->leftJoin('users as u', 'c.initiator_id', '=', 'u.id')
+            ->where('c.recipient_id', '=', $user_id)
+            ->whereNull('c.accepted_at') // Ispravljeno
+            ->select('c.id as connection_id', 'u.id as user_id', 'u.name', 'u.email')
+            ->distinct()
+            ->get();
+
+        return $friends;
+    }
+
    
     public function initiate(int $recipient_id): Connection
     {
         $initiator = $this->jwtServices->getContent();
 
-        // Check if user is already have connection
+        // Check if connection already exists in either direction
         $connection = DB::table('user_connections')
-            ->where('initiator_id', $initiator['id'])
-            ->where('recipient_id', $recipient_id)
+            ->where(function($query) use ($initiator, $recipient_id) {
+                $query->where('initiator_id', $initiator['id'])
+                    ->where('recipient_id', $recipient_id);
+            })
+            ->orWhere(function($query) use ($initiator, $recipient_id) {
+                $query->where('initiator_id', $recipient_id)
+                    ->where('recipient_id', $initiator['id']);
+            })
             ->first();
 
-        // 1 connection not exsists
         if ($connection) {
-            abort(403, 'Connection already exsists');
+            abort(403, 'Connection already exists');
         }
 
         try {
@@ -83,33 +104,32 @@ class ConnectionServices {
             ]);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-            abort(response()->json(['error' => 'Database error'], 500));
+            abort(500, 'Database error');
         }
 
         return $connection;
-    }  
+    }
 
     public function accept(int $connection_id): Connection
     {
         $recipient = $this->jwtServices->getContent();
 
         try {
-            $connection = Connection::where('id', $connection_id)
+            $updated = Connection::where('id', $connection_id)
                 ->where('recipient_id', $recipient['id'])
-                ->where('is_accepted', 0)
+                ->whereNull('accepted_at') // pending only
                 ->update([
-                    'is_accepted' => true,
                     'accepted_at' => now(),
                 ]);
 
-            if (!$connection) {
-                abort(response()->json(['error' => 'Connection not found'], 404));
+            if (!$updated) {
+                abort(404, 'Connection not found or already accepted');
             }
 
             return Connection::find($connection_id);
         } catch (QueryException $e) {
             Log::error("DB error in accept(): " . $e->getMessage());
-            abort(response()->json(['error' => 'Database error: ' . $e->getMessage()], 500));
+            abort(500, 'Database error');
         }
     }
 

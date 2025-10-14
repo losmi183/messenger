@@ -21,20 +21,53 @@ class UserSeeder extends Seeder
             'email' => 'milos@mail.com',
             'password' => Hash::make('milos'),
         ]);               
-        DB::table('users')->insert([
-            'name' => 'nesa',
-            'email' => 'nesa@mail.com',
-            'password' => Hash::make('nesa'),
+        DB::table(table: 'users')->insert([
+            'name' => 'emil',
+            'email' => 'emil@mail.com',
+            'password' => Hash::make('emil'),
         ]);               
         DB::table('users')->insert([
-            'name' => 'deki',
-            'email' => 'deki@mail.com',
-            'password' => Hash::make('deki'),
+            'name' => 'simke',
+            'email' => 'simke@mail.com',
+            'password' => Hash::make('simke'),
         ]);               
         DB::table('users')->insert([
-            'name' => 'dusan',
-            'email' => 'dusan@mail.com',
-            'password' => Hash::make('dusan'),
+            'name' => 'lola',
+            'email' => 'lola@mail.com',
+            'password' => Hash::make('lola'),
         ]);               
+        DB::table('users')->insert([
+            'name' => 'vlada',
+            'email' => 'vlada@mail.com',
+            'password' => Hash::make('vlada'),
+        ]);               
+        DB::table('users')->insert([
+            'name' => 'beni',
+            'email' => 'beni@mail.com',
+            'password' => Hash::make('beni'),
+        ]);               
+        DB::table('users')->insert([
+            'name' => 'milencuga',
+            'email' => 'milencuga@mail.com',
+            'password' => Hash::make('milencuga'),
+        ]);               
+        DB::table('users')->insert([
+            'name' => 'djura',
+            'email' => 'djura@mail.com',
+            'password' => Hash::make('djura'),
+        ]);               
+
+        DB::table('users')->insert([
+            'id' => 1001,
+            'name' => 'nemac',
+            'email' => 'nemac@mail.com',
+            'password' => Hash::make('nemac'),
+        ]); 
+        DB::table('users')->insert([
+            'id' => 1002,
+            'name' => 'kinez',
+            'email' => 'kinez@mail.com',
+            'password' => Hash::make('kinez'),
+        ]); 
     }
 }
