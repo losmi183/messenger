@@ -37,6 +37,10 @@ class ConnectionSeeder extends Seeder
             'recipient_id' => 1,
         ]);
         DB::table('user_connections')->insert([
+            'initiator_id' => 7,
+            'recipient_id' => 1,
+        ]);
+        DB::table('user_connections')->insert([
             'initiator_id' => 1,
             'recipient_id' => 1001,
             'accepted_at' => now()

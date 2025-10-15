@@ -31,31 +31,20 @@ class ConnectionServices {
                 $join->on('u.id', '=', 'c.initiator_id')
                     ->orOn('u.id', '=', 'c.recipient_id');
             })
+            ->leftJoin('messages as m', function($join) use ($user_id) {
+                $join->on('m.sender_id', '=', 'u.id')
+                    ->where('m.receiver_id', '=', $user_id)
+                    ->whereNull('m.seen');
+            })
             ->where(function ($query) use ($user_id) {
                 $query->where('c.initiator_id', $user_id)
                     ->orWhere('c.recipient_id', $user_id);
             })
-            ->where('u.id', '!=', $user_id) // <--- isključujemo samog sebe
-            ->select('u.id', 'u.name') // izaberi samo šta ti treba
-            ->distinct()
+            ->where('u.id', '!=', $user_id)
+            ->whereNotNull('c.accepted_at') // VAŽNO - samo accepted
+            ->select('u.id', 'u.name', DB::raw('COUNT(m.id) as new_messages'))
+            ->groupBy('u.id', 'u.name')
             ->get();
-        $friend_ids = $friends->pluck('id');
-
-        $messages = DB::table('messages')
-        ->select('sender_id')
-        ->whereIn('sender_id', $friend_ids)
-        ->where('receiver_id', $user_id)
-        ->whereNull('seen')
-        ->pluck('sender_id');
-
-        foreach ($friends as $friend) {
-            $friend->new_messages = 0;
-            foreach ($messages as $message) {
-                if($message == $friend->id) {
-                    $friend->new_messages++;
-                }
-            }
-        }
 
         return $friends;
     }

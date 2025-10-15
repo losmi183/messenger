@@ -55,7 +55,14 @@ class UserSeeder extends Seeder
             'name' => 'djura',
             'email' => 'djura@mail.com',
             'password' => Hash::make('djura'),
-        ]);               
+        ]);       
+        DB::table('users')->insert([
+            'name' => 'edi',
+            'email' => 'edi@mail.com',
+            'password' => Hash::make('edi'),
+        ]);      
+        
+        
 
         DB::table('users')->insert([
             'id' => 1001,
@@ -68,6 +75,18 @@ class UserSeeder extends Seeder
             'name' => 'kinez',
             'email' => 'kinez@mail.com',
             'password' => Hash::make('kinez'),
+        ]); 
+        DB::table('users')->insert([
+            'id' => 1003,
+            'name' => 'lanmi',
+            'email' => 'lanmi@mail.com',
+            'password' => Hash::make('lanmi'),
+        ]); 
+        DB::table('users')->insert([
+            'id' => 1004,
+            'name' => 'boki',
+            'email' => 'boki@mail.com',
+            'password' => Hash::make('boki'),
         ]); 
     }
 }
