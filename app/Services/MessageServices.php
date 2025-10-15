@@ -120,4 +120,26 @@ class MessageServices {
 
         return true;
     }
+
+    public function markAsSeen(int $friend_id): bool
+    {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+
+        try {
+            DB::table('messages')
+                ->where('sender_id', $friend_id)
+                ->where('receiver_id', $user_id)
+                ->where('is_read', 0)
+                ->update([
+                    'status' => 'seen',
+                    'is_read' => 1,
+                    'seen' => now(),
+                ]);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
+
+        return true;
+    }
 }

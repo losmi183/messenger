@@ -51,6 +51,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function ()
     Route::get('/conversation/{friend_id}', [MessageController::class, 'conversation']);
     Route::post('/send', [MessageController::class, 'send']);
     Route::post('/seen', [MessageController::class, 'seen']);
+    Route::post('/mark-as-seen', [MessageController::class, 'markAsSeen']);
 });
 
 // Route::post('/broadcasting/auth', function (Request $request) {

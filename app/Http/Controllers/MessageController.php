@@ -10,6 +10,7 @@ use App\Services\MessageServices;
 use Illuminate\Http\JsonResponse;
 use App\Repository\UserRepository;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\MarkAsSeenRequest;
 use App\Http\Requests\MessageSeenRequest;
 use App\Http\Requests\MessageSendRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,6 +87,15 @@ class MessageController extends Controller
         $data = $request->validated();
 
         $result = $this->messageServices->seen($data['friend_id'], $data['seen']);        
+
+        return response()->json($result);
+    }
+
+    public function markAsSeen(MarkAsSeenRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $result = $this->messageServices->markAsSeen($data['friend_id']);        
 
         return response()->json($result);
     }
