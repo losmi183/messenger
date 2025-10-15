@@ -31,20 +31,45 @@ class ConnectionServices {
                 $join->on('u.id', '=', 'c.initiator_id')
                     ->orOn('u.id', '=', 'c.recipient_id');
             })
-            ->leftJoin('messages as m', function($join) use ($user_id) {
-                $join->on('m.sender_id', '=', 'u.id')
-                    ->where('m.receiver_id', '=', $user_id)
-                    ->whereNull('m.seen');
-            })
             ->where(function ($query) use ($user_id) {
                 $query->where('c.initiator_id', $user_id)
                     ->orWhere('c.recipient_id', $user_id);
             })
             ->where('u.id', '!=', $user_id)
-            ->whereNotNull('c.accepted_at') // VAŽNO - samo accepted
-            ->select('u.id', 'u.name', DB::raw('COUNT(m.id) as new_messages'))
-            ->groupBy('u.id', 'u.name')
+            ->whereNotNull('c.accepted_at') // Samo prihvaćeni prijatelji
+            ->select('u.id', 'u.name')
+            ->distinct()
             ->get();
+
+        $friend_ids = $friends->pluck('id');
+
+        $messages = DB::table('messages')
+            ->select('sender_id', 'updated_at', 'seen', 'message')
+            ->whereIn('sender_id', $friend_ids)
+            ->orWhereIn('receiver_id', $friend_ids)
+            ->where('receiver_id', $user_id)
+            // ->whereNull('seen')
+            ->get(); // Get umesto pluck da bi imao updated_at
+
+        foreach ($friends as $friend) {
+            $friend->new_messages = 0;
+            $friend->last_message_time = '1970-01-01 00:00:00';
+            
+            foreach ($messages as $message) {
+                if ($message->sender_id == $friend->id && $message->seen === null) {
+                    $friend->new_messages++;     
+                }
+                // Postavi last_message_time ako je poruka novija
+                if ($message->sender_id == $friend->id && $message->updated_at > $friend->last_message_time) {
+                    $friend->last_message_time = $message->updated_at;
+                }
+            }
+        }
+
+        // Sortiraj prijatelje po last_message_time (najnovije prvo, NULL na kraju)
+        $friends = $friends->sortByDesc(function ($friend) {
+            return $friend->last_message_time ?? '1970-01-01 00:00:00';
+        })->values();
 
         return $friends;
     }
