@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 
 class ConnectionSeeder extends Seeder
 {
@@ -18,7 +19,8 @@ class ConnectionSeeder extends Seeder
         DB::table('user_connections')->insert([
             'initiator_id' => 1,
             'recipient_id' => 2,
-            'accepted_at' => now()
+            'accepted_at' => now(),
+            'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
         ]);
         DB::table('user_connections')->insert([
             'initiator_id' => 1,
@@ -43,7 +45,8 @@ class ConnectionSeeder extends Seeder
         DB::table('user_connections')->insert([
             'initiator_id' => 1,
             'recipient_id' => 1001,
-            'accepted_at' => now()
+            'accepted_at' => now(),
+            'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
         ]);
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ConnetcionController;
 use App\Http\Controllers\PusherAuthController;
@@ -54,6 +55,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function ()
     Route::post('/mark-as-seen', [MessageController::class, 'markAsSeen']);
 });
 
-// Route::post('/broadcasting/auth', function (Request $request) {
-//     return Broadcast::auth($request);
-// });
+Route::group(['middleware' => ['jwt', 'admin'], 'prefix' => 'admin'], routes: function () {
+    Route::post('/users', [AdminController::class, 'users']);
+
+});

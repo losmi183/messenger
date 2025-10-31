@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('initiator_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('recipient_id')->constrained('users')->onDelete('cascade');
             $table->timestamp('accepted_at')->nullable();
+            $table->string('salt',32)->nullable();
             $table->timestamps();
 
             // Unikatan par da se ne može više puta poslati zahtev

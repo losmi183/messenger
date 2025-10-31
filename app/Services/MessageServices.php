@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Repository\MessageRepository;
+use stdClass;
 
 class MessageServices {
 
@@ -24,12 +25,23 @@ class MessageServices {
         $this->messageRepository = $messageRepository;
     }
 
-    public function conversation(int $friend_id): Collection
+    public function conversation(int $friend_id): stdClass
     {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
 
-        $messages = DB::table('messages as m')
+        $connection = DB::table('user_connections as c')
+            ->where(function ($query) use ($user_id) {
+                $query->where('c.initiator_id', $user_id)
+                    ->orWhere('c.recipient_id', $user_id);
+            })
+            ->where(function ($query) use ($friend_id) {
+                $query->where('c.initiator_id', $friend_id)
+                    ->orWhere('c.recipient_id', $friend_id);
+            })
+            ->first();
+
+        $connection->messages = DB::table('messages as m')
         ->select('m.*', 'u.name as sender_name', 'u2.name as reciver_name')
         ->leftJoin('users as u', 'm.sender_id', 'u.id')
         ->leftJoin('users as u2', 'm.receiver_id', 'u2.id')
@@ -45,7 +57,7 @@ class MessageServices {
         ->orderBy('m.created_at', 'asc')
         ->get();
 
-        return $messages;
+        return $connection;
     }
 
     public function send(int $recipient_id, string $content): Message

@@ -51,7 +51,7 @@ class UserServices {
             $data['avatar']->move($destination, $filename);
 
             // sačuvaj relativnu putanju (da lako praviš URL)
-            $data['avatar'] = 'images/avatar/' . $filename;
+            $data['avatar'] = $filename;
         } else {
             unset($data['avatar']);
         }
@@ -65,7 +65,6 @@ class UserServices {
         } catch (\Throwable $th) {
             //throw $th;
         }
-        User::update($data);
 
         return $user;
     }

@@ -15,6 +15,59 @@
         }
     ],
     "paths": {
+        "/admin/users": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "All users on database wwith filters and pagination",
+                "operationId": "205f498a58a0c737280449f2dda574ba",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    ""
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "default": "mil"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "default": "mil"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "default": "user"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "default": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connection Initiated"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/auth/register": {
             "post": {
                 "tags": [
@@ -160,6 +213,28 @@
                 "responses": {
                     "200": {
                         "description": "All user connections"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/connection/requested": {
+            "get": {
+                "tags": [
+                    "Connection"
+                ],
+                "summary": "Get all connection requests for authenticated user",
+                "operationId": "42ff40e40f1459a4bcbddde5687c0a06",
+                "responses": {
+                    "200": {
+                        "description": "All user requests"
                     },
                     "500": {
                         "description": "Server Error"
@@ -636,6 +711,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
         {
             "name": "Auth",
             "description": "Auth"

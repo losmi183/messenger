@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserUpdateServices extends FormRequest
+class AdminUsersRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,10 @@ class UserUpdateServices extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:2|max:50',
-            // 'about' => 'required|string',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            // max je u KB → 2048 = 2MB
+            'name' => 'nullable|string',
+            'email' => 'nullable|string',
+            'role' => 'nullable|string',
+            'status' => 'nullable|string',
         ];
     }
 

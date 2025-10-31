@@ -134,6 +134,7 @@ class ConnectionServices {
                 ->whereNull('accepted_at') // pending only
                 ->update([
                     'accepted_at' => now(),
+                    'salt' => bin2hex(random_bytes(16))
                 ]);
 
             if (!$updated) {

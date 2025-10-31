@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Pusher\Pusher;
+use App\Models\User;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 use App\Services\AuthServices;
@@ -83,8 +84,10 @@ class AuthController extends Controller
     )]
     public function whoami(Request $request, AuthServices $authServices): JsonResponse
     {
-        $result = $authServices->whoami();
-        return response()->json($result);
+        $user = $authServices->whoami();
+        $userData = User::find($user['id']);
+        $userData->avatar = config('settings.avatar_path') . $userData->avatar;
+        return response()->json($userData);
     }
     
     #[OA\Post(
