@@ -25,6 +25,8 @@ class AdminUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'itemsPerPage' => 'nullable|integer',
+            'page' => 'nullable|integer',
             'name' => 'nullable|string',
             'email' => 'nullable|string',
             'role' => 'nullable|string',

@@ -24,6 +24,8 @@ class AdminController extends Controller
         content: new OA\MediaType(mediaType: 'application/json',
         schema: new OA\Schema(required: [''],
             properties: [
+                new OA\Property(property: 'itemsPerPage', type: 'integer', default: 5),
+                new OA\Property(property: 'page', type: 'integer', default: 1),
                 new OA\Property(property: 'name', type: 'string', default: 'mil'),
                 new OA\Property(property: 'email', type: 'string', default: 'mil'),
                 new OA\Property(property: 'role', type: 'string', default: 'user'),

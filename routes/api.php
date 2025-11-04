@@ -57,5 +57,4 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function ()
 
 Route::group(['middleware' => ['jwt', 'admin'], 'prefix' => 'admin'], routes: function () {
     Route::post('/users', [AdminController::class, 'users']);
-
 });

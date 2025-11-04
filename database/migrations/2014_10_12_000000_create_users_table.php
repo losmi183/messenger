@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('role')->default('user');
+            $table->string('status')->default('active'); // pending, active, suspended
             $table->string('about')->nullable();
             $table->string('avatar')->nullable();
             $table->timestamps();
