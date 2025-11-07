@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,7 @@ class UserSeeder extends Seeder
             'email' => 'milos@mail.com',
             'password' => Hash::make('milos'),
             'avatar' => '1.png',
-            'role'=> 'admin'
+            'role'=> Role::ADMIN->value
         ]);               
         DB::table('users')->insert([
             'id' => 2,
