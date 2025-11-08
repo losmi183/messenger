@@ -10,6 +10,14 @@
     },
     "servers": [
         {
+            "url": "http://165.227.162.255/api",
+            "description": "Dev server"
+        },
+        {
+            "url": "https://165.227.162.255/api",
+            "description": "Dev server"
+        },
+        {
             "url": "http://messenger.test/api",
             "description": "Dev server"
         }
