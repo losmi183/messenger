@@ -66,22 +66,33 @@ class MessageServices {
         unset($user['exp']);
         $event = 'message.sent';
 
+        // $pusher = new Pusher(
+        //     config('pusher.key'),
+        //     config('pusher.secret'),
+        //     config('pusher.app_id'),
+        //     [
+        //         'cluster' => config('pusher.cluster'),
+        //         'useTLS' => config('pusher.useTLS', true),
+        //     ]
+        // );
         $pusher = new Pusher(
-            config('pusher.key'),
-            config('pusher.secret'),
-            config('pusher.app_id'),
+            'd842d9bd852a8bbc74b0',
+            '19954d590e875e506b86',
+            '1821016',
             [
-                'cluster' => config('pusher.cluster'),
-                'useTLS' => config('pusher.useTLS', true),
+                'cluster' => 'eu',
+                'useTLS' => true,
             ]
         );
+        Log::info('$recipient_id');
         Log::info($recipient_id);
 
-        Log::info(config('pusher.key'));
-        Log::info(config('pusher.secret'));
-        Log::info(config('pusher.app_id'));
-        Log::info(config('pusher.cluster'));
-        Log::info(config('pusher.useTLS'));
+        Log::info('$pusher');
+        Log::info(json_encode($pusher));
+        // Log::info(config('pusher.secret'));
+        // Log::info(config('pusher.app_id'));
+        // Log::info(config('pusher.cluster'));
+        // Log::info(config('pusher.useTLS'));
         
 
         // Privatni kanal za korisnika recipient_id
