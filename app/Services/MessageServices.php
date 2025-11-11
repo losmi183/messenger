@@ -75,6 +75,14 @@ class MessageServices {
                 'useTLS' => config('pusher.useTLS', true),
             ]
         );
+        Log::info($recipient_id);
+
+        Log::info(config('pusher.key'));
+        Log::info(config('pusher.secret'));
+        Log::info(config('pusher.app_id'));
+        Log::info(config('pusher.cluster'));
+        Log::info(config('pusher.useTLS'));
+        
 
         // Privatni kanal za korisnika recipient_id
         $pusher->trigger("private-user-{$recipient_id}", $event, [

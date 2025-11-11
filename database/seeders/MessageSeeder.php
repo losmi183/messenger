@@ -73,7 +73,6 @@ class MessageSeeder extends Seeder
                 'created_at' => $start1->copy()->addMinutes(3),
                 'updated_at' => $start1->copy()->addMinutes(3),
             ],
-          
         ]);
 
         // // Drugi razgovor (user 1 <-> user 1001)
