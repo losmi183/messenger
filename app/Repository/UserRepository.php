@@ -44,14 +44,21 @@ class UserRepository
         $user_id = $user['id'];
         $search = $data['search'];
 
-
         return DB::table('users as u')
-            ->leftJoin('user_connections as c', function ($join) {
-                $join->on('c.initiator_id', '=', 'u.id')
-                    ->orOn('c.recipient_id', '=', 'u.id');
+            ->leftJoin('user_connections as c', function ($join) use ($user_id) {
+                $join->on(function ($query) use ($user_id) {
+                    $query->where(function ($q) use ($user_id) {
+                        $q->on('c.initiator_id', '=', 'u.id')
+                        ->where('c.recipient_id', '=', $user_id);
+                    })
+                    ->orWhere(function ($q) use ($user_id) {
+                        $q->on('c.recipient_id', '=', 'u.id')
+                        ->where('c.initiator_id', '=', $user_id);
+                    });
+                });
             })
-            ->where('u.name', 'LIKE', '%'.$search.'%') // ako budeš hteo da dodaš pretragu
             ->where('u.id', '!=', $user_id)
+            ->when($search ?? null, fn($q) => $q->where('u.name', 'LIKE', "%$search%"))
             ->select(
                 'u.id as user_id',
                 'u.name',
@@ -67,6 +74,29 @@ class UserRepository
                 ")
             )
             ->get();
+
+        // return DB::table('users as u')
+        //     ->leftJoin('user_connections as c', function ($join) {
+        //         $join->on('c.initiator_id', '=', 'u.id')
+        //             ->orOn('c.recipient_id', '=', 'u.id');
+        //     })
+        //     ->where('u.name', 'LIKE', '%'.$search.'%') // ako budeš hteo da dodaš pretragu
+        //     ->where('u.id', '!=', $user_id)
+        //     ->select(
+        //         'u.id as user_id',
+        //         'u.name',
+        //         'u.email',
+        //         'c.id as connection_id',
+        //         'c.accepted_at',
+        //         DB::raw("
+        //             CASE
+        //                 WHEN c.id IS NULL THEN NULL
+        //                 WHEN c.accepted_at IS NOT NULL THEN 'FRIEND'
+        //                 WHEN c.accepted_at IS NULL THEN 'PENDING'
+        //             END AS status
+        //         ")
+        //     )
+        //     ->get();
 
 
         
