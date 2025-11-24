@@ -25,6 +25,7 @@ use App\Http\Controllers\PusherAuthController;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
+Route::post('/auth/forgot-password', [UserController::class, 'forgotPassword']);
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
     Route::get('/whoami', [AuthController::class, 'whoami']);

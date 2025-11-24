@@ -11,6 +11,7 @@ use App\Http\Requests\ConnectRequest;
 use App\Http\Requests\UserSearchRequest;
 use App\Http\Requests\UserUpdateServices;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ProfileUpdateServices;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -119,6 +120,37 @@ class UserController extends Controller
 
         $users = $this->userServices->update($data);
         return response()->json($users);
+    }
+    
+    #[OA\Post(
+        path: '/user/forgot-password',
+        summary: 'Send reset password to email',
+        tags: ['User'],
+        security: [['bearerAuth' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\MediaType(
+                mediaType: 'application/json',
+                schema: new OA\Schema(
+                    type: 'object',
+                    required: ['email'],
+                    properties: [
+                        new OA\Property(property: 'email', type: 'string', description: 'User email', example: 'milos.glogovac@gmail.com'),
+                    ]
+                )
+            )
+        ),
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'Reset password link sent'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+        ]
+    )]
+    public function forgotPassword(ForgotPasswordRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        $users = $this->userServices->forgotPassword($data);
+        return response()->json(['messsage' => 'reset link sent on email']);
     }
     
     #[OA\Post(

@@ -69,14 +69,9 @@ class UserServices {
         return $user;
     }
 
-    public function changePassword(array $data): bool
+    public function forgotPassword(array $data): bool
     {
-        $user = $this->jwtServices->getContent();
-        $user_id = $user['id'];
-
-        $user = User::find($user_id);
-        $user->password = Hash::make($data['password']);
-        $user->save();
+        // send email to $data['password']
         return true;
     }
 

@@ -10,11 +10,7 @@
     },
     "servers": [
         {
-            "url": "http://165.227.162.255/api",
-            "description": "Dev server"
-        },
-        {
-            "url": "https://165.227.162.255/api",
+            "url": "https://crypt-talk.online/api",
             "description": "Dev server"
         },
         {
