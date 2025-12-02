@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ConnetcionController;
 use App\Http\Controllers\PusherAuthController;
@@ -26,6 +27,12 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 Route::post('/auth/forgot-password', [UserController::class, 'forgotPassword']);
+
+Route::post('/auth/google-login', [AuthController::class, 'googleLogin']);
+
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+
+
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
     Route::get('/whoami', [AuthController::class, 'whoami']);

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('google_id')->nullable();
             $table->string('role')->default('user');
             $table->string('status')->default('active'); // pending, active, suspended
             $table->string('about')->nullable();

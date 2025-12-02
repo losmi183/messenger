@@ -10,6 +10,7 @@ use App\Services\AuthServices;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\GoogleLoginRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
@@ -70,6 +71,32 @@ class AuthController extends Controller
         return response()->json([
             'token' => $result
         ]);
+    }
+
+    public function googleLogin(GoogleLoginRequest $request, AuthServices $authServices)
+    {
+        $data = $request->validated();
+
+        $result = $authServices->googleLogin($data['idToken']);
+
+        return response()->json([
+            'token' => $result
+        ]);
+    }
+
+    public function handleGoogleCallback(Request $request, AuthServices $authServices)
+    {
+        $code = $request->query('code');
+
+        if (!$code) {
+            return redirect('/login')->withErrors(['Google login failed']);
+        }
+
+        // AuthServices koristi code da dobije token i podatke od Google
+        $token = $authServices->handleGoogleOAuthCode($code);
+
+        // Možeš da preusmeriš front sa JWT tokenom u query string ili cookie
+        return redirect("https://crypt-talk.online/login?token={$token}");
     }
 
     #[OA\Get(
