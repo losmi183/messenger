@@ -4,8 +4,12 @@ namespace App\Services;
 use Google_Client;
 use App\Models\User;
 use GuzzleHttp\Client;
+use App\Mail\VerifyEmail;
 use App\Repository\UserRepository;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 class AuthServices {
 
@@ -22,10 +26,23 @@ class AuthServices {
      * 
      * @return User
      */
-    public function register(array $data): User
-    {
-        $data['password'] = Hash::make($data['password']);
-        return $this->userRepository->store($data);
+    public function register(array $userData): User
+    {   
+        // 1. set token
+        $registerToken = $this->jwtServices->encrypt($userData, 1440);  // 1440 - 24h
+
+        // 3. Send email
+        try {
+            Mail::to($userData['email'])->send(
+                new VerifyEmail($userData, $registerToken)
+            );
+        } catch(Throwable $ex) {
+            Log::error($ex->getMessage());
+        }
+
+        $userData['password'] = Hash::make($userData['password']);
+
+        return $this->userRepository->store($userData); 
     }
 
     /**

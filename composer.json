@@ -22,7 +22,7 @@
         "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.5.10",
         "spatie/laravel-ignition": "^1.0",
-        "tkeer/mailbase": "*"
+        "tkeer/mailbase": "^2.0"
     },
     "autoload": {
         "psr-4": {

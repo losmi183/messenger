@@ -91,6 +91,21 @@ class JWTServices
     }
 
     /**
+     * @param array $user
+     * @param float $ttl_minutes
+     * 
+     * @return string
+     */
+    public function encrypt(array $user, float $ttl_minutes): string
+    {   
+        $userData['exp'] = time() + $ttl_minutes * 60;
+        $token = JWT::encode($userData, $this->key, 'HS256');
+        return $token;
+    }
+
+
+
+    /**
      * @return array|null
      */
     public function getContent(): ?array
