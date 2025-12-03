@@ -15,10 +15,12 @@ class ConnectionServices {
 
     private UserRepository $userRepository;
     private JWTServices $jwtServices;
+    private PusherServices $pusherServices;
 
-    public function __construct(UserRepository $userRepository, JWTServices $jwtServices) {
+    public function __construct(UserRepository $userRepository, JWTServices $jwtServices, PusherServices $pusherServices) {
         $this->userRepository = $userRepository;
         $this->jwtServices = $jwtServices;
+        $this->pusherServices = $pusherServices;
     }
 
     public function myConnections(): Collection
@@ -126,20 +128,22 @@ class ConnectionServices {
 
     public function accept(int $connection_id): Connection
     {
-        $recipient = $this->jwtServices->getContent();
+        $user = $this->jwtServices->getContent();        
 
         try {
-            $updated = Connection::where('id', $connection_id)
-                ->where('recipient_id', $recipient['id'])
-                ->whereNull('accepted_at') // pending only
-                ->update([
-                    'accepted_at' => now(),
-                    'salt' => bin2hex(random_bytes(16))
-                ]);
-
-            if (!$updated) {
+            $connection = Connection::where('recipient_id', $user['id'])->whereNull('accepted_at')->first();
+            if (!$connection) {
                 abort(404, 'Connection not found or already accepted');
             }
+
+            $connection->accepted_at = now();
+            $connection->salt =bin2hex(random_bytes(16));
+            $connection->save();
+
+            $event = 'connection.accepted';
+            $message = $user['name'].' accepted your connection request';
+
+            $this->pusherServices->push($event, $connection->initiator_id, $message, $user);
             
 
             return Connection::find($connection_id);

@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
             'name' => 'milos',
             'email' => 'milos@mail.com',
             'password' => Hash::make('milos'),
+            'active_from' => now(),
             'avatar' => '1.png',
             'role'=> Role::ADMIN->value
         ]);               
@@ -30,6 +31,7 @@ class UserSeeder extends Seeder
             'name' => 'emil',
             'email' => 'emil@mail.com',
             'password' => Hash::make('emil'),
+            'active_from' => now(),
             'avatar' => '2.png'
         ]);               
         DB::table('users')->insert([
@@ -37,6 +39,7 @@ class UserSeeder extends Seeder
             'name' => 'simke',
             'email' => 'simke@mail.com',
             'password' => Hash::make('simke'),
+            'active_from' => now(),
             'avatar' => '3.png'
         ]);               
         DB::table('users')->insert([
@@ -44,6 +47,7 @@ class UserSeeder extends Seeder
             'name' => 'lola',
             'email' => 'lola@mail.com',
             'password' => Hash::make('lola'),
+            'active_from' => now(),
             'avatar' => '4.png'
         ]);               
         DB::table('users')->insert([
@@ -51,27 +55,32 @@ class UserSeeder extends Seeder
             'name' => 'vlada',
             'email' => 'vlada@mail.com',
             'password' => Hash::make('vlada'),
+            'active_from' => now(),
             'avatar' => '5.png'
         ]);               
         DB::table('users')->insert([
             'name' => 'beni',
             'email' => 'beni@mail.com',
             'password' => Hash::make('beni'),
+            'active_from' => now(),
         ]);               
         DB::table('users')->insert([
             'name' => 'milencuga',
             'email' => 'milencuga@mail.com',
             'password' => Hash::make('milencuga'),
+            'active_from' => now(),
         ]);               
         DB::table('users')->insert([
             'name' => 'djura',
             'email' => 'djura@mail.com',
             'password' => Hash::make('djura'),
+            'active_from' => now(),
         ]);       
         DB::table('users')->insert([
             'name' => 'edi',
             'email' => 'edi@mail.com',
             'password' => Hash::make('edi'),
+            'active_from' => now(),
         ]);      
         
         
@@ -81,24 +90,28 @@ class UserSeeder extends Seeder
             'name' => 'nemac',
             'email' => 'nemac@mail.com',
             'password' => Hash::make('nemac'),
+            'active_from' => now(),
         ]); 
         DB::table('users')->insert([
             'id' => 1002,
             'name' => 'kinez',
             'email' => 'kinez@mail.com',
             'password' => Hash::make('kinez'),
+            'active_from' => now(),
         ]); 
         DB::table('users')->insert([
             'id' => 1003,
             'name' => 'lanmi',
             'email' => 'lanmi@mail.com',
             'password' => Hash::make('lanmi'),
+            'active_from' => now(),
         ]); 
         DB::table('users')->insert([
             'id' => 1004,
             'name' => 'boki',
             'email' => 'boki@mail.com',
             'password' => Hash::make('boki'),
+            'active_from' => now(),
         ]); 
     }
 }
