@@ -42,6 +42,27 @@ class AuthController extends Controller
         $result = $authServices->register($data);
 
         return response()->json($result);
+    }    
+
+    public function resendVerifyEmail(Request $request, AuthServices $authServices) {
+
+        $data = $request->validated();
+        
+        $result = $authServices->resendVerifyEmail($data);
+
+        return response()->json($result);
+    }
+    public function verifyEmail(Request $request, AuthServices $authServices) {
+
+        $verify_token =  $request->query('verify_token');
+        
+        $result = $authServices->verifyEmail($verify_token);
+
+        $frontendUrl = env('APP_ENV') === 'production' 
+            ? env('FRONTEND_PROD') 
+            : env('FRONTEND_DEV');
+
+        return redirect($frontendUrl . '/login');
     }
 
     #[OA\Post(

@@ -29,7 +29,11 @@ class AuthServices {
     public function register(array $userData): User
     {   
         // 1. set token
-        $registerToken = $this->jwtServices->encrypt($userData, 1440);  // 1440 - 24h
+        $registerToken = $this->jwtServices->encrypt($userData, 1);  // 1440 - 24h
+
+        $status = $this->jwtServices->decodeJWT($registerToken);
+
+        $decript = $this->jwtServices->getContent();
 
         // 3. Send email
         try {
@@ -48,11 +52,69 @@ class AuthServices {
     /**
      * @param array $data
      * 
+     * @return User
+     */
+    public function resendVerifyEmail(array $userData): array
+    {   
+        // 1. set token
+        $registerToken = $this->jwtServices->encrypt($userData, 1);  // 1440 - 24h
+
+        // 3. Send email
+        try {
+            Mail::to($userData['email'])->send(
+                new VerifyEmail($userData, $registerToken)
+            );
+        } catch(Throwable $ex) {
+            Log::error($ex->getMessage());
+        }
+
+        return $userData; 
+    }
+
+    public function verifyEmail($verify_token) {
+
+        $status = $this->jwtServices->decodeJWT($verify_token);
+        if ($status == 403) {
+            abort( 403, 'Token has expired');
+        }
+        if ($status != 200) {
+            abort(400, 'Token not valid');
+        }
+
+        $userData = $this->jwtServices->getContent(); 
+
+        $email = $userData['email'];
+
+        try {
+            User::where('email', $email)
+            ->update([
+                'active_from' => now()
+            ]);
+        } catch(Throwable $ex) {
+            Log::error($ex->getMessage());
+            abort(400, 'Account not activated!');
+        }
+
+        $user = User::where('email', $email)->first();
+
+        $token = $this->jwtServices->createJWT($user, 60000);
+        return $token;
+                
+    }
+
+    /**
+     * @param array $data
+     * 
      * @return string
      */
     public function login(array $data): string
     {
         $user = $this->userRepository->findByEmail($data['email']);
+
+        if(!$user->active_from) {
+            abort(400, 'Account not active');
+        }
+
         // If user found, check password is correct
         if ($user && Hash::check($data['password'], $user->password)) {
             $token = $this->jwtServices->createJWT($user, 60000);

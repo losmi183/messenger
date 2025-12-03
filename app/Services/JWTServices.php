@@ -98,6 +98,13 @@ class JWTServices
      */
     public function encrypt(array $user, float $ttl_minutes): string
     {   
+
+        $userData = [
+            'exp' => time() + $ttl_minutes * 60,
+            'email' => $user['email'],
+            // 'name' => $user['name'],
+        ];
+
         $userData['exp'] = time() + $ttl_minutes * 60;
         $token = JWT::encode($userData, $this->key, 'HS256');
         return $token;

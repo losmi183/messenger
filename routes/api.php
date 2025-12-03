@@ -27,6 +27,10 @@ Route::get('/test', [AuthController::class, 'test']);
 
 
 Route::post('/auth/register', [AuthController::class, 'register']);
+Route::get('/auth/resend-verify-email', [AuthController::class, 'resendVerifyEmail']);
+Route::get('/auth/verify-email', [AuthController::class, 'verifyEmail']);
+
+
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
 Route::post('/auth/forgot-password', [UserController::class, 'forgotPassword']);

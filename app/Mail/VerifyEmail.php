@@ -27,8 +27,12 @@ class VerifyEmail extends Mailable
         $this->username = $userData['name'];
         $this->email = $userData['email'];
 
+        $frontendUrl = env('APP_ENV') === 'production' 
+            ? env('BACKEND_PROD') 
+            : env('BACKEND_DEV');
+        
                 // 2. Create verification URL
-        $this->verificationUrl = url('/verify-email?token=' . $registerToken);
+        $this->verificationUrl = $frontendUrl . 'api/auth/verify-email?verify_token=' . $registerToken;
 
     }
 
