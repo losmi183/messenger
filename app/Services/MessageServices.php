@@ -1,28 +1,31 @@
 <?php
 
 namespace App\Services;
+use stdClass;
 use Carbon\Carbon;
 use Pusher\Pusher;
 use App\Models\User;
 use App\Models\Message;
 use App\Events\MessageSent;
+use App\Services\PusherServices;
 use App\Repository\UserRepository;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Repository\MessageRepository;
-use stdClass;
 
 class MessageServices {
 
     private UserRepository $userRepository;
     private JWTServices $jwtServices;
     private MessageRepository $messageRepository;
-    public function __construct(UserRepository $userRepository, JWTServices $jwtServices, MessageRepository $messageRepository) {
+    private PusherServices $pusherServices;
+    public function __construct(UserRepository $userRepository, JWTServices $jwtServices, MessageRepository $messageRepository, PusherServices $pusherServices) {
         $this->userRepository = $userRepository;
         $this->jwtServices = $jwtServices;
         $this->messageRepository = $messageRepository;
+        $this->pusherServices = $pusherServices;
     }
 
     public function conversation(int $friend_id): stdClass
@@ -66,40 +69,7 @@ class MessageServices {
         unset($user['exp']);
         $event = 'message.sent';
 
-        $pusher = new Pusher(
-            config('pusher.key'),
-            config('pusher.secret'),
-            config('pusher.app_id'),
-            [
-                'cluster' => config('pusher.cluster'),
-                'useTLS' => config('pusher.useTLS', true),
-            ]
-        );
-        // $pusher = new Pusher(
-        //     'd842d9bd852a8bbc74b0',
-        //     '19954d590e875e506b86',
-        //     '1821016',
-        //     [
-        //         'cluster' => 'eu',
-        //         'useTLS' => true,
-        //     ]
-        // );
-        Log::info('$recipient_id');
-        Log::info($recipient_id);
-
-        Log::info('$pusher');
-        Log::info(json_encode($pusher));
-        // Log::info(config('pusher.secret'));
-        // Log::info(config('pusher.app_id'));
-        // Log::info(config('pusher.cluster'));
-        // Log::info(config('pusher.useTLS'));
-        
-
-        // Privatni kanal za korisnika recipient_id
-        $pusher->trigger("private-user-{$recipient_id}", $event, [
-            'message' => $content,
-            'from' => $user,
-        ]);
+        $this->pusherServices->push($event, $recipient_id, $content, $user);
 
         try {
             $message = Message::create([

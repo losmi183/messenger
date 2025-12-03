@@ -128,6 +128,76 @@
                 }
             }
         },
+        "/auth/resend-verify-email": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "resend verify email",
+                "operationId": "39227350a2b92d59775b309975bce2d5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string",
+                                        "default": "newuser@mail.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Verify email sent"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/auth/verify-email": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify email address",
+                "operationId": "6902a4b313dbb202a9d4592dc5acd616",
+                "parameters": [
+                    {
+                        "name": "verify_token",
+                        "in": "query",
+                        "description": "Email verification token from email link",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redirects to frontend login page"
+                    },
+                    "400": {
+                        "description": "Invalid or expired token"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        },
         "/auth/login": {
             "post": {
                 "tags": [

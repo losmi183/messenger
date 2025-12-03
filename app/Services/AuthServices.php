@@ -124,6 +124,13 @@ class AuthServices {
         abort(400, 'Invalid credentials');
     }
 
+    public function refresh(): \stdClass
+    {
+        $user = $this->jwtServices->getContent();
+
+        return $this->jwtServices->setPair($user, 60);
+    }
+
     public function googleLogin(?string $idToken): string
     {
         $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID_WEB')]);

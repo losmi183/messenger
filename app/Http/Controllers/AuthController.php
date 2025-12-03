@@ -15,6 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
+    public AuthServices $authServices;
+    public function __construct(AuthServices $authServices) {
+        $this->authServices = $authServices;
+    }
 
     #[OA\Post(
         path: '/auth/register',
@@ -35,34 +39,86 @@ class AuthController extends Controller
             new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
         ]
     )]
-    public function register(RegisterRequest $request, AuthServices $authServices): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $result = $authServices->register($data);
+        $result = $this->authServices->register($data);
 
-        return response()->json($result);
+        return response()->json([
+            'message' => 'Please check your email to finish registration',
+            'data' => $data
+        ]);
     }    
 
-    public function resendVerifyEmail(Request $request, AuthServices $authServices) {
+    #[OA\Post(
+        path: '/auth/resend-verify-email',
+        summary: 'resend verify email',
+        requestBody: new OA\RequestBody(required: true,
+        content: new OA\MediaType(mediaType: 'application/json',
+        schema: new OA\Schema(required: ['email', 'password'],
+            properties: [
+                new OA\Property(property: 'email', type: 'string', default: 'newuser@mail.com', description: 'email'),
+            ]
+        ),
+    )),
+        tags: ['Auth'],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'Verify email sent'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
+        ]
+    )]
+    public function resendVerifyEmail(Request $request) {
 
         $data = $request->validated();
         
-        $result = $authServices->resendVerifyEmail($data);
+        $result = $this->authServices->resendVerifyEmail($data);
 
         return response()->json($result);
     }
-    public function verifyEmail(Request $request, AuthServices $authServices) {
+
+    #[OA\Get(
+        path: '/auth/verify-email',
+        summary: 'Verify email address',
+        tags: ['Auth'],
+        parameters: [
+            new OA\Parameter(
+                name: 'verify_token',
+                in: 'query',
+                required: true,
+                description: 'Email verification token from email link',
+                schema: new OA\Schema(type: 'string'),
+                example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: Response::HTTP_FOUND, 
+                description: 'Redirects to frontend login page'
+            ),
+            new OA\Response(
+                response: Response::HTTP_BAD_REQUEST, 
+                description: 'Invalid or expired token'
+            ),
+            new OA\Response(
+                response: Response::HTTP_NOT_FOUND, 
+                description: 'User not found'
+            )
+        ]
+    )]
+    public function verifyEmail(Request $request) {
 
         $verify_token =  $request->query('verify_token');
         
-        $result = $authServices->verifyEmail($verify_token);
+        $result = $this->authServices->verifyEmail($verify_token);
 
         $frontendUrl = env('APP_ENV') === 'production' 
             ? env('FRONTEND_PROD') 
             : env('FRONTEND_DEV');
 
-        return redirect($frontendUrl . '/login');
+        $loginUrl = $frontendUrl . 'login';
+
+        return redirect($loginUrl);
     }
 
     #[OA\Post(
@@ -83,29 +139,36 @@ class AuthController extends Controller
             new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
         ]
     )]
-    public function login(LoginRequest $request, AuthServices $authServices): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
         $data = $request->validated();
 
-        $result = $authServices->login($data);
+        $result = $this->authServices->login($data);
 
         return response()->json([
             'token' => $result
         ]);
     }
 
-    public function googleLogin(GoogleLoginRequest $request, AuthServices $authServices)
+    public function refresh(Request $request): JsonResponse
+    {
+        $result = $this->authServices->refresh();
+
+        return response()->json($result);
+    }
+
+    public function googleLogin(GoogleLoginRequest $request)
     {
         $data = $request->validated();
 
-        $result = $authServices->googleLogin($data['idToken']);
+        $result = $this->authServices->googleLogin($data['idToken']);
 
         return response()->json([
             'token' => $result
         ]);
     }
 
-    public function handleGoogleCallback(Request $request, AuthServices $authServices)
+    public function handleGoogleCallback(Request $request)
     {
         $code = $request->query('code');
 
@@ -114,7 +177,7 @@ class AuthController extends Controller
         }
 
         // AuthServices koristi code da dobije token i podatke od Google
-        $token = $authServices->handleGoogleOAuthCode($code);
+        $token = $this->authServices->handleGoogleOAuthCode($code);
 
         // Možeš da preusmeriš front sa JWT tokenom u query string ili cookie
         return redirect("https://crypt-talk.online/login?token={$token}");
@@ -130,9 +193,9 @@ class AuthController extends Controller
             new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error")
         ]
     )]
-    public function whoami(Request $request, AuthServices $authServices): JsonResponse
+    public function whoami(Request $request): JsonResponse
     {
-        $user = $authServices->whoami();
+        $user = $this->authServices->whoami();
         $userData = User::find($user['id']);
         $userData->avatar = config('settings.avatar_path') . $userData->avatar;
         return response()->json($userData);

@@ -140,6 +140,7 @@ class ConnectionServices {
             if (!$updated) {
                 abort(404, 'Connection not found or already accepted');
             }
+            
 
             return Connection::find($connection_id);
         } catch (QueryException $e) {
