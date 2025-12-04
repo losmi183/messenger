@@ -16,3 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('landing-page');
 });
+Route::get('/how-it-works', function () {
+    return view('landing-page');
+});

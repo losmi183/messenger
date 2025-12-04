@@ -28,10 +28,12 @@ class MessageServices {
         $this->pusherServices = $pusherServices;
     }
 
-    public function conversation(int $friend_id): stdClass
+    public function conversation(array $data): stdClass
     {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
+        $friend_id = intval($data['friendId']);
+        $last_message_id = $data['lastMessageId'] ? intval($data['lastMessageId']) : null;
 
         $connection = DB::table('user_connections as c')
             ->where(function ($query) use ($user_id) {
@@ -56,8 +58,12 @@ class MessageServices {
             $q->where('m.sender_id', $friend_id)
             ->where('m.receiver_id', $user_id);
         })
+        ->when($last_message_id, function ($q) use ($last_message_id) {
+            $q->where('m.id', '<', $last_message_id);
+        })
         // ->where('conversation_id', $conversation_id)
-        ->orderBy('m.created_at', 'asc')
+        ->orderBy('m.id', 'desc')
+        ->limit(10)
         ->get();
 
         return $connection;

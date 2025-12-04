@@ -22,28 +22,34 @@ class ConnectionSeeder extends Seeder
             'accepted_at' => now(),
             'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
         ]);
+        // DB::table('user_connections')->insert([
+        //     'initiator_id' => 1,
+        //     'recipient_id' => 3,
+        // ]);
+        // DB::table('user_connections')->insert([
+        //     'initiator_id' => 4,
+        //     'recipient_id' => 1,
+        // ]);
+        // DB::table('user_connections')->insert([
+        //     'initiator_id' => 5,
+        //     'recipient_id' => 1,
+        // ]);
+        // DB::table('user_connections')->insert([
+        //     'initiator_id' => 6,
+        //     'recipient_id' => 1,
+        // ]);
+        // DB::table('user_connections')->insert([
+        //     'initiator_id' => 7,
+        //     'recipient_id' => 1,
+        // ]);
         DB::table('user_connections')->insert([
             'initiator_id' => 1,
-            'recipient_id' => 3,
+            'recipient_id' => 1001,
+            'accepted_at' => now(),
+            'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
         ]);
         DB::table('user_connections')->insert([
-            'initiator_id' => 4,
-            'recipient_id' => 1,
-        ]);
-        DB::table('user_connections')->insert([
-            'initiator_id' => 5,
-            'recipient_id' => 1,
-        ]);
-        DB::table('user_connections')->insert([
-            'initiator_id' => 6,
-            'recipient_id' => 1,
-        ]);
-        DB::table('user_connections')->insert([
-            'initiator_id' => 7,
-            'recipient_id' => 1,
-        ]);
-        DB::table('user_connections')->insert([
-            'initiator_id' => 1,
+            'initiator_id' => 2,
             'recipient_id' => 1001,
             'accepted_at' => now(),
             'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'

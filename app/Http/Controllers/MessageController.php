@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\MarkAsSeenRequest;
 use App\Http\Requests\MessageSeenRequest;
 use App\Http\Requests\MessageSendRequest;
+use App\Http\Requests\ConversationRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -46,9 +47,11 @@ class MessageController extends Controller
             new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
         ]
     )]
-    public function conversation(int $friend_id): JsonResponse
+    public function conversation(ConversationRequest $request): JsonResponse
     {
-        $result = $this->messageServices->conversation($friend_id);
+        $data = $request->validated();        
+
+        $result = $this->messageServices->conversation($data);
 
         return response()->json($result);
     }
