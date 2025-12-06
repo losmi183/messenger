@@ -20,6 +20,8 @@ return new class extends Migration
 
             $table->string('title')->nullable();  // samo za grupe
 
+            $table->string('salt',32)->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
 

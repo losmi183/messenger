@@ -35,8 +35,6 @@ Route::post('/auth/forgot-password', [UserController::class, 'forgotPassword']);
 Route::post('/auth/google-login', [AuthController::class, 'googleLogin']);
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 
-
-
 Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
     Route::get('/whoami', [AuthController::class, 'whoami']);
 });
@@ -49,6 +47,8 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
     Route::post('/change-password', [UserController::class, 'changePassword']);
 });
 
+
+
 Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function () {
     Route::get('/my-connections', [ConnetcionController::class, 'myConnections']);
     Route::get('/requested', [ConnetcionController::class, 'requested']);
@@ -60,6 +60,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function
 
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->middleware('jwt');
 Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function () {
+    Route::get('/my-conversations', [MessageController::class, 'myConversations']);
     Route::post('/conversation', [MessageController::class, 'conversation']);
     Route::post('/send', [MessageController::class, 'send']);
     Route::post('/seen', [MessageController::class, 'seen']);

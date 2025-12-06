@@ -26,7 +26,7 @@ class ConversationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'friendId' => 'required',
+            'conversationId' => 'required',
             'lastMessageId' => 'nullable',
         ];
     }

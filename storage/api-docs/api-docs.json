@@ -493,6 +493,28 @@
                 ]
             }
         },
+        "/message/my-conversations": {
+            "get": {
+                "tags": [
+                    "Message"
+                ],
+                "summary": "Get all conversations for authenticated user",
+                "operationId": "eafadd5f0aaeb9b8c139c2d030505fb4",
+                "responses": {
+                    "200": {
+                        "description": "All user conversations"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/message/conversation/{friend_id}": {
             "get": {
                 "tags": [

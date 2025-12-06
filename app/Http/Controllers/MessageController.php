@@ -28,6 +28,24 @@ class MessageController extends Controller
     }
 
     #[OA\Get(
+        path: '/message/my-conversations',
+        summary: 'Get all conversations for authenticated user',
+        tags: ['Message'],
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: Response::HTTP_OK, description: 'All user conversations'),
+            new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
+        ]
+    )]
+    public function myConversations(): JsonResponse {
+             
+        $result = $this->messageServices->myConversations();
+        return response()->json($result);
+
+    }
+
+
+    #[OA\Get(
         path: '/message/conversation/{friend_id}',
         summary: 'Get conversation with a friend',
         tags: ['Message'],
@@ -80,7 +98,7 @@ class MessageController extends Controller
     {
         $data = $request->validated();
 
-        $this->messageServices->send($data['recipient_id'], $data['content']);        
+        $this->messageServices->send($data['conversationId'], $data['content']);        
 
         return response()->json(['status' => 'success']);
     }
