@@ -30,7 +30,12 @@ class ConversationSeeder extends Seeder
                 'id' => 3,
                 'type' => 'group',
                 'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
-            ]
+            ],
+            [
+                'id' => 5,
+                'type' => 'private',
+                'salt' => '8f9c180a5e48746fb8ab4bd196ad4e4b'
+            ],
         ]);
         DB::table('conversations')->insert([
             'id' => 4,
@@ -111,6 +116,18 @@ class ConversationSeeder extends Seeder
                 'user_id' =>6,
                 'joined_at' => now()
             ],
+
+            [
+                'conversation_id' => 5,
+                'user_id' =>2,
+                'joined_at' => now()
+            ],
+            [
+                'conversation_id' => 5,
+                'user_id' =>1001,
+                'joined_at' => now()
+            ],
+
         ]);
     }
 }

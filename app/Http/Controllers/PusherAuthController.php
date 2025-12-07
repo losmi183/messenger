@@ -25,40 +25,33 @@ class PusherAuthController extends Controller
                 'useTLS' => config('pusher.useTLS', true),
             ]
         );
-        // $pusher = new Pusher(
-        //     'd842d9bd852a8bbc74b0',
-        //     '19954d590e875e506b86',
-        //     '1821016',
-        //     [
-        //         'cluster' => 'eu',
-        //         'useTLS' => true,
-        //     ]
-        // );
-
-        Log::info('$pusher');
-        Log::info(json_encode($pusher));
         
         $channel_name = $request->input('channel_name');
-        Log::info('$channel_name');
-        Log::info($channel_name);
-        $socket_id = $request->input('socket_id');
-        Log::info('$socket_id');
-        Log::info($socket_id);
+        $socket_id = $request->input('socket_id');        
         
+        // Izvuci conversation_id iz imena kanala
+        preg_match('/private-conversation-(\d+)/', $channel_name, $m);
+        $conversation_id = $m[1] ?? null;
+        
+        if (!$conversation_id) {
+            return response('Forbidden', 403);
+        }
+
         $user = $this->jWTServices->getContent();
         $user_id = $user['id'];
-        Log::info('$user_id');
-        Log::info($user_id);
 
+        // Provera da li user pripada toj konverzaciji
+        $allowed = \DB::table('conversation_user')
+            ->where('conversation_id', $conversation_id)
+            ->where('user_id', $user_id)
+            ->exists();
         
-        // Proveri da li korisnik sme da pristupa ovom kanalu
-        if ($channel_name === "private-user-{$user_id}") {
-            // Autorizuj pristup
-            $auth = $pusher->socket_auth($channel_name, $socket_id);
-            return response($auth);
+        if (!$allowed) {
+            return response('Forbidden', 403);
         }
         
-        // Odbaci pristup
-        return response('Forbidden', 403);
+        // OK
+        $auth = $pusher->socket_auth($channel_name, $socket_id);
+        return response($auth);
     }
 }

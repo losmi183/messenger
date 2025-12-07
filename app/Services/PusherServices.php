@@ -10,7 +10,7 @@ class PusherServices {
 
     }
 
-    public function push(string $event, int $recipient_id, string $content, array $user) : bool 
+    public function push(string $event, string $channel, int $conversation_id, string $content, array $user) : bool 
     {
         
         $pusher = new Pusher(
@@ -24,7 +24,7 @@ class PusherServices {
         );
         
         Log::info('$recipient_id');
-        Log::info(message: $recipient_id);
+        Log::info( $conversation_id);
 
         Log::info('$pusher');
         Log::info(json_encode($pusher));
@@ -35,7 +35,7 @@ class PusherServices {
         
 
         // Privatni kanal za korisnika recipient_id
-        $pusher->trigger("private-user-{$recipient_id}", $event, [
+        $pusher->trigger($channel, $event, [
             'message' => $content,
             'from' => $user,
         ]);

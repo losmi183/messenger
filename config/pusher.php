@@ -6,4 +6,8 @@ return [
     'secret' => env('PUSHER_APP_SECRET', '19954d590e875e506b86'),
     'cluster' => env('PUSHER_APP_CLUSTER', 'eu'),
     'useTLS' => true,
+
+    'PRIVATE_CONVERSATION' => env('PRIVATE_CONVERSATION', 'private-conversation-'),
+    'MESSAGE_SENT' => env('MESSAGE_SENT', 'message.sent'),
+    'MESSAGE_SEEN' => env('MESSAGE_SEEN', 'message.seen'),
 ];

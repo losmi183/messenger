@@ -104,8 +104,14 @@ class MessageServices {
         $user = $this->jwtServices->getContent();
         unset($user['exp']);
         $event = 'message.sent';
+        $channel = config('pusher.PRIVATE_CONVERSATION').$conversation_id;
 
-        $this->pusherServices->push($event, $conversation_id, $content, $user);
+        $this->pusherServices->push(
+            $event,
+            $channel,
+            $conversation_id, 
+            $content, 
+            $user);
 
         try {
             $message = Message::create([
@@ -136,7 +142,7 @@ class MessageServices {
         );
 
         // Privatni kanal za korisnika recipient_id
-        $pusher->trigger("private-user-{$friend_id}", $event, [
+        $pusher->trigger("private-conversation-{$friend_id}", $event, [
             'seen' => $seen
         ]);
 
