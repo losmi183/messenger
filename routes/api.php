@@ -40,7 +40,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'user'], function () {
-    Route::post('/search', [UserController::class, 'search']);
+    Route::get('/search', [UserController::class, 'search']);
     Route::get('/show/{id}', [UserController::class, 'show']);
     Route::get('/edit', [UserController::class, 'edit']);
     Route::post('/update', [UserController::class, 'update']);
@@ -61,6 +61,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->middleware('jwt');
 Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function () {
     Route::get('/my-conversations', [MessageController::class, 'myConversations']);
+    Route::get('/start-conversation/{friend_id}', [MessageController::class, 'startConversation']);
     Route::post('/conversation', [MessageController::class, 'conversation']);
     Route::post('/send', [MessageController::class, 'send']);
     Route::post('/seen', [MessageController::class, 'seen']);

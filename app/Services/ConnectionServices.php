@@ -137,7 +137,7 @@ class ConnectionServices {
             }
 
             $connection->accepted_at = now();
-            $connection->salt =bin2hex(random_bytes(16));
+            $connection->salt = bin2hex(random_bytes(16));
             $connection->save();
 
             $event = 'connection.accepted';

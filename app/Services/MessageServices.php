@@ -34,35 +34,6 @@ class MessageServices {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
 
-        // $conversations = DB::table('conversation_user as cu')
-        // ->select('c.id as conversation_id', 'type', 'title')
-        // ->leftJoin('conversations as c', 'cu.conversation_id','=','c.id')
-        // ->where('user_id', $user_id)
-        // ->get();
-
-        // $conversation_ids = $conversations->pluck('conversation_id')->toArray();
-
-        // $conversation_user = DB::table('conversation_user as cu')
-        // ->select('cu.conversation_id', DB::raw("GROUP_CONCAT(u.id) as user_ids, GROUP_CONCAT(u.name) as usernames"))
-        // ->join('users as u', 'u.id', 'cu.user_id')
-        // ->whereIn('cu.conversation_id', $conversation_ids)
-        // ->where('cu.user_id', '!=', $user_id)
-        // ->groupBy('cu.conversation_id')
-        // ->get();
-
-        // foreach($conversations as $conv) {
-
-        //     $conv_users = $conversation_user->where('conversation_id', $conv->id)->first();
-        //     // foreach($conv_users as $conv_user) {
-        //     //     $user = explode(',', )
-
-        //     // }
-
-        //     $conv->users = $conversation_user
-        //         ->where('conversation_id', $conv->id)
-        //         ->first();
-        // }
-
         $conversations = Conversation::whereHas('users', function($q) use ($user_id) {
             $q->where('users.id', $user_id);
         })
@@ -73,6 +44,40 @@ class MessageServices {
         ->get(['id', 'type', 'title']);
 
         return $conversations;
+    }
+
+    public function startConversation($friend_id) {
+        $user = $this->jwtServices->getContent();
+        $user_id = $user['id'];
+
+
+        $conversation = DB::select("
+            SELECT c.id
+            FROM conversation c
+            JOIN concersation_user cu1 ON cu1.conversation_id = c.id
+            JOIN concersation_user cu2 ON cu2.conversation_id = c.id
+            WHERE c.type = 'private'
+                AND cu1.user_id = :user_id
+                AND cu2.user_id = :friend_id
+            LIMIT 1
+        ", 
+            ['user_id' => $user_id, 'friend_id' => $friend_id]
+        );
+
+        if($conversation) {
+            return $conversation;
+        }
+
+        $conversation_id = DB::table('conversations')->insertGetId([
+            'type' => 'private',
+            'salt' => bin2hex(random_bytes(16)),
+            'created_by' => $user_id
+        ]);
+
+        DB::table('conversation_user')->insertGetId([
+            'conversation_id' => $conversation_id,
+        ])
+
     }
 
     public function conversation(array $data)

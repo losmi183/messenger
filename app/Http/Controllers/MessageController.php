@@ -44,6 +44,10 @@ class MessageController extends Controller
 
     }
 
+    public function startConversation($friend_id) {
+        $result = $this->messageServices->startConversation($friend_id);
+        return response()->json($result);
+    }
 
     #[OA\Get(
         path: '/message/conversation/{friend_id}',
