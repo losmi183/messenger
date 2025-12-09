@@ -34,35 +34,24 @@ class MessageServices {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
 
-        $conversations = Conversation::whereHas('users', function($q) use ($user_id) {
-            $q->where('users.id', $user_id);
-        })
-        ->with(['users' => function($q) use ($user_id) {
-            $q->where('users.id', '!=', $user_id)
-            ->select('users.id', 'users.name', 'conversation_user.last_read_message_id');
-        }])
-        ->get(['id', 'type', 'title']);
+        $conversations = Conversation::forUser($user_id)
+            ->get(['id', 'type', 'title']);
 
         return $conversations;
     }
 
-    public function startConversation($friend_id) {
+    public function startConversation($friend_id): Conversation 
+    {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
 
 
-        $conversation = DB::select("
-            SELECT c.id
-            FROM conversation c
-            JOIN concersation_user cu1 ON cu1.conversation_id = c.id
-            JOIN concersation_user cu2 ON cu2.conversation_id = c.id
-            WHERE c.type = 'private'
-                AND cu1.user_id = :user_id
-                AND cu2.user_id = :friend_id
-            LIMIT 1
-        ", 
-            ['user_id' => $user_id, 'friend_id' => $friend_id]
-        );
+        $conversation = Conversation::where('type', 'private')
+            ->whereHas('users', fn($q) => $q->where('users.id', $user_id))
+            ->whereHas('users', fn($q) => $q->where('users.id', $friend_id))
+            ->forUser($user_id)     // tvoj scope ovde
+            ->first(['id', 'type', 'title']);
+
 
         if($conversation) {
             return $conversation;
@@ -74,10 +63,24 @@ class MessageServices {
             'created_by' => $user_id
         ]);
 
-        DB::table('conversation_user')->insertGetId([
-            'conversation_id' => $conversation_id,
-        ])
+        DB::table('conversation_user')->insert([
+            [
+                'conversation_id' => $conversation_id,
+                'user_id' => $user_id,
+                'joined_at' => now()
+            ],
+            [
+                'conversation_id' => $conversation_id,
+                'user_id' => $friend_id,
+                'joined_at' => now()
+            ]
+        ]);
 
+        $conversation = Conversation::forUser($user_id)
+            ->where('id', $conversation_id)
+            ->first(['id', 'type', 'title']);
+
+        return $conversation;
     }
 
     public function conversation(array $data)

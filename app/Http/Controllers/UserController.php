@@ -40,10 +40,10 @@ class UserController extends Controller
             new OA\Response(response: Response::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error')
         ]
     )]
-    public function search(UserSearchRequest $request, UserServices $userServices): JsonResponse
+    public function search(Request $request, UserServices $userServices): JsonResponse
     {
-        $data = $request->validated();
-        $users = $userServices->search($data);
+        $search = $request->query('search');
+        $users = $userServices->search($search);
         return response()->json($users);
     }
 

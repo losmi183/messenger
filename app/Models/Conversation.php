@@ -14,4 +14,19 @@ class Conversation extends Model
                     ->withPivot('last_read_message_id')
                     ->withTimestamps();
     }
+
+    public function scopeForUser($query, $user_id)
+    {
+        return $query
+            ->whereHas('users', function($q) use ($user_id) {
+                $q->where('users.id', $user_id);
+            })
+            ->with([
+                'users' => function($q) use ($user_id) {
+                    $q->where('users.id', '!=', $user_id)
+                    ->select('users.id', 'users.name', 'conversation_user.last_read_message_id');
+                }
+            ]);
+    }
+
 }

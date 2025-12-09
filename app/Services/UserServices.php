@@ -17,9 +17,9 @@ class UserServices {
     }
 
    
-    public function search(array $data)
+    public function search(string $search)
     {
-        return $this->userRepository->search($data);
+        return $this->userRepository->search($search);
     }
 
     public function show(int $id): ?User

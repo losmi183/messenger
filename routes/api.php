@@ -61,7 +61,7 @@ Route::group(['middleware' => 'jwt', 'prefix' => 'connection'], routes: function
 Route::post('/pusher/auth', [PusherAuthController::class, 'authenticate'])->middleware('jwt');
 Route::group(['middleware' => 'jwt', 'prefix' => 'message'], routes: function () {
     Route::get('/my-conversations', [MessageController::class, 'myConversations']);
-    Route::get('/start-conversation/{friend_id}', [MessageController::class, 'startConversation']);
+    Route::post('/start-conversation', [MessageController::class, 'startConversation']);
     Route::post('/conversation', [MessageController::class, 'conversation']);
     Route::post('/send', [MessageController::class, 'send']);
     Route::post('/seen', [MessageController::class, 'seen']);

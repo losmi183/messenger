@@ -14,6 +14,7 @@ use App\Http\Requests\MarkAsSeenRequest;
 use App\Http\Requests\MessageSeenRequest;
 use App\Http\Requests\MessageSendRequest;
 use App\Http\Requests\ConversationRequest;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -44,7 +45,8 @@ class MessageController extends Controller
 
     }
 
-    public function startConversation($friend_id) {
+    public function startConversation(Request $request): JsonResponse {
+        $friend_id = $request->get('user_id');
         $result = $this->messageServices->startConversation($friend_id);
         return response()->json($result);
     }
