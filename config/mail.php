@@ -34,6 +34,9 @@ return [
     */
 
     'mailers' => [
+        'resend' => [
+            'transport' => 'resend',
+        ],
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),

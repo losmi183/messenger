@@ -36,15 +36,16 @@ class AuthServices {
         $decript = $this->jwtServices->getContent();
 
         // 3. Send email
-        try {
-            Mail::to($userData['email'])->send(
-                new VerifyEmail($userData, $registerToken)
-            );
-        } catch(Throwable $ex) {
-            Log::error($ex->getMessage());
-        }
+        // try {
+        //     Mail::to($userData['email'])->send(
+        //         new VerifyEmail($userData, $registerToken)
+        //     );
+        // } catch(Throwable $ex) {
+        //     Log::error($ex->getMessage());
+        // }
 
         $userData['password'] = Hash::make($userData['password']);
+        $userData['active_from'] = now();
 
         return $this->userRepository->store($userData); 
     }

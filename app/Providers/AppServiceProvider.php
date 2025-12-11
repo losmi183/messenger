@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Services\JWTServices;
+use App\Mail\Transport\ResendTransport;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Mail;
+use Resend;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Mail::extend('resend', function ($config) {
+            return new ResendTransport(
+                config('services.resend.key')
+            );
+        });
+
     }
 }
